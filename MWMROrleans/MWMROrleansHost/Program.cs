@@ -23,9 +23,25 @@ TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR TH
 
 using System;
 using System.Threading.Tasks;
+using MWMROrleansInterfaces;
 
 namespace MWMROrleansHost
 {
+    public class MetadataGrain
+    {
+        public IStatefulGrain GetGrain(int id, bool writeonly)
+        {
+            if(writeonly == true)
+            {
+                return Orleans.GrainClient.GrainFactory.GetGrain<IStatefulGrainWriter>(0);
+            }
+            else
+            {
+                return Orleans.GrainClient.GrainFactory.GetGrain<IStatefulGrainReader>(0);
+            }
+        }
+    }
+
     /// <summary>
     /// Orleans test silo host
     /// </summary>
@@ -44,7 +60,9 @@ namespace MWMROrleansHost
 
             Orleans.GrainClient.Initialize("DevTestClientConfiguration.xml");
 
-            var friend = Orleans.GrainClient.GrainFactory.GetGrain<MWMROrleansInterfaces.IStatefulGrain>(0);
+            MetadataGrain grainfactory = new MetadataGrain();
+
+            var friend = grainfactory.GetGrain(0, true);
             Console.WriteLine("\n\n{0}\n\n", friend.SayHello().Result);
 
             // TODO: once the previous call returns, the silo is up and running.

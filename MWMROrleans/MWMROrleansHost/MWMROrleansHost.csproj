@@ -125,6 +125,10 @@
       <Project>{d34349f5-95ff-42cb-8fde-de52240b780c}</Project>
       <Name>MWMROrleansInterfaces</Name>
     </ProjectReference>
+    <ProjectReference Include="..\MWMROrleans\MWMROrleans.csproj">
+      <Project>{9c52178a-3dd5-4c08-bd06-b6d0e50e7588}</Project>
+      <Name>MWMROrleans</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
