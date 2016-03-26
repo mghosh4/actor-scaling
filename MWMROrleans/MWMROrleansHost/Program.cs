@@ -22,6 +22,7 @@ TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR TH
 */
 
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using MWMROrleansInterfaces;
 
@@ -62,8 +63,14 @@ namespace MWMROrleansHost
 
             MetadataGrain grainfactory = new MetadataGrain();
 
-            var friend = grainfactory.GetGrain(0, true);
-            Console.WriteLine("\n\n{0}\n\n", friend.SayHello().Result);
+            var write = grainfactory.GetGrain(0, false);
+            write.SetValue(new KeyValuePair<string, string>("hello", "1")).Wait();
+            write.SetValue(new KeyValuePair<string, string>("how", "2")).Wait();
+            write.SetValue(new KeyValuePair<string, string>("are", "3")).Wait();
+            write.SetValue(new KeyValuePair<string, string>("you", "4")).Wait();
+            Task<string> value = write.GetValue("are");
+            value.Wait();
+            Console.WriteLine("\n\n{0}\n\n", value.Result);
 
             // TODO: once the previous call returns, the silo is up and running.
             //       This is the place your custom logic, for example calling client logic

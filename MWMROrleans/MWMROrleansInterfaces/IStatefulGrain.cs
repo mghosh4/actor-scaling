@@ -10,19 +10,21 @@ namespace MWMROrleansInterfaces
     public interface IStatefulGrain : IGrainWithIntegerKey
     {
         Task<string> SayHello();
+
+        Task<string> GetValue(string key);
+
+        Task<IDictionary<string, string>> GetAllEntries();
+
+        Task SetValue(KeyValuePair<string, string> entry);
+
+        Task ClearValues();
     }
 
     public interface IStatefulGrainReader : IStatefulGrain
     {
-        Task<string> GetValue(string key);
-
-        Task<IDictionary<string, string>> GetAllEntries();
     }
 
-    public interface IStatefulGrainWriter : IStatefulGrain
+    public interface IStatefulGrainWriter : IStatefulGrainReader
     {
-        Task SetValue(KeyValuePair<string, string> entry);
-
-        Task ClearValues();
     }
 }

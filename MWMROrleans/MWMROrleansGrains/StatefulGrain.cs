@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Orleans;
@@ -12,9 +13,38 @@ namespace MWMROrleansGrains
     [StorageProvider(ProviderName = "MemoryStore")]
     public class StatefulGrain : Grain<StatefulGrainState>, MWMROrleansInterfaces.IStatefulGrain
     {
+        public override Task OnActivateAsync()
+        {
+            if (State.Prefs == null)
+            {
+                State.Prefs = new Dictionary<string, string>();
+            }
+            return base.OnActivateAsync();
+        }
+
         public Task<string> SayHello()
         {
             return Task.FromResult("Hello World!");
+        }
+
+        public Task<string> GetValue(string key)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IDictionary<string, string>> GetAllEntries()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task SetValue(KeyValuePair<string, string> entry)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task ClearValues()
+        {
+            throw new NotImplementedException();
         }
     }
 
@@ -32,10 +62,11 @@ namespace MWMROrleansGrains
         }
     }
 
-    public class StatefulGrainWriter : StatefulGrain, MWMROrleansInterfaces.IStatefulGrainWriter
+    public class StatefulGrainWriter : StatefulGrainReader, MWMROrleansInterfaces.IStatefulGrainWriter
     {
         public Task SetValue(KeyValuePair<string, string> entry)
         {
+            Console.WriteLine("\n\n{0}\n\n", entry.ToString());
             State.Prefs.Add(entry);
             return TaskDone.Done;
         }
