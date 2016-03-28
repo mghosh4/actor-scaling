@@ -13,15 +13,6 @@ namespace MWMROrleansGrains
     [StorageProvider(ProviderName = "MemoryStore")]
     public class StatefulGrain : Grain<StatefulGrainState>, MWMROrleansInterfaces.IStatefulGrain
     {
-        public override Task OnActivateAsync()
-        {
-            if (State.Prefs == null)
-            {
-                State.Prefs = new Dictionary<string, string>();
-            }
-            return base.OnActivateAsync();
-        }
-
         public Task<string> SayHello()
         {
             return Task.FromResult("Hello World!");

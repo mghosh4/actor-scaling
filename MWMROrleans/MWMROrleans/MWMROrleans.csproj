@@ -36,8 +36,9 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Orleans">
-      <HintPath>..\..\..\OrleansTemplates\src\packages\Microsoft.Orleans.Core.1.0.7\lib\net45\Orleans.dll</HintPath>
+    <Reference Include="Orleans, Version=1.0.0.0, Culture=neutral, PublicKeyToken=070f47935e3ed133, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.Orleans.Core.1.1.0\lib\net451\Orleans.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -48,11 +49,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="IMetadataGrain.cs" />
+    <Compile Include="MetadataGrainFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MWMROrleansGrains\MWMROrleansGrains.csproj">
+      <Project>{7a18fe59-46a2-45d3-a2b3-637a40d8df9b}</Project>
+      <Name>MWMROrleansGrains</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MWMROrleansInterfaces\MWMROrleansInterfaces.csproj">
+      <Project>{d34349f5-95ff-42cb-8fde-de52240b780c}</Project>
+      <Name>MWMROrleansInterfaces</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
