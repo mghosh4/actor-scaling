@@ -5,6 +5,9 @@ using Orleans;
 using Orleans.Concurrency;
 using Orleans.Providers;
 
+using MWMROrleansInterfaces;
+using MWMROrleans;
+
 namespace MWMROrleansGrains
 {
     /// <summary>
@@ -13,9 +16,16 @@ namespace MWMROrleansGrains
     [StorageProvider(ProviderName = "MemoryStore")]
     public class StatefulGrain : Grain<StatefulGrainState>, MWMROrleansInterfaces.IStatefulGrain
     {
-        public Task<string> SayHello()
+        public override async Task OnActivateAsync()
         {
-            return Task.FromResult("Hello World!");
+            State.Prefs = new Dictionary<string, string>();
+            await base.OnActivateAsync();
+        }
+
+        public Task SetState(GrainState state)
+        {
+            State.Prefs = (state as StatefulGrainState).Prefs;
+            return TaskDone.Done;
         }
 
         public Task<string> GetValue(string key)
@@ -59,12 +69,31 @@ namespace MWMROrleansGrains
         {
             Console.WriteLine("\n\n{0}\n\n", entry.ToString());
             State.Prefs.Add(entry);
+
+            List<IStatefulGrain> othergrains = MetadataGrainFactory.GetAllGrains();
+            Console.WriteLine("\n\n{0}\n\n", othergrains.Count);
+            foreach (IStatefulGrain grain in othergrains)
+            {
+                if (grain != this)
+                {
+                    Console.WriteLine("\n\n{0}\n\n", entry.ToString());
+                    grain.SetState(State).Wait();
+                }
+            }
+
             return TaskDone.Done;
         }
 
         public Task ClearValues()
         {
             State.Prefs.Clear();
+            List<IStatefulGrain> othergrains = MetadataGrainFactory.GetAllGrains();
+            foreach (IStatefulGrain grain in othergrains)
+            {
+                if (grain != this)
+                    grain.SetState(State).Wait();
+            }
+
             return TaskDone.Done;
         }
     }

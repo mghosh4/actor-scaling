@@ -7,9 +7,9 @@ namespace MWMROrleansInterfaces
     /// <summary>
     /// Grain interface IGrain1
     /// </summary>
-    public interface IStatefulGrain : IGrainWithIntegerKey
+    public interface IStatefulGrain : IGrainWithStringKey
     {
-        Task<string> SayHello();
+        Task SetState(GrainState state);
 
         Task<string> GetValue(string key);
 

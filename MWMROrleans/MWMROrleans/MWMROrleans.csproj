@@ -56,10 +56,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\MWMROrleansGrains\MWMROrleansGrains.csproj">
-      <Project>{7a18fe59-46a2-45d3-a2b3-637a40d8df9b}</Project>
-      <Name>MWMROrleansGrains</Name>
-    </ProjectReference>
     <ProjectReference Include="..\MWMROrleansInterfaces\MWMROrleansInterfaces.csproj">
       <Project>{d34349f5-95ff-42cb-8fde-de52240b780c}</Project>
       <Name>MWMROrleansInterfaces</Name>

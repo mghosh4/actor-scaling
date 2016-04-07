@@ -46,12 +46,13 @@ namespace MWMROrleansHost
 
             Orleans.GrainClient.Initialize("DevTestClientConfiguration.xml");
 
-            var write = MetadataGrainFactory.GetGrain(0, true);
-            write.SetValue(new KeyValuePair<string, string>("hello", "1")).Wait();
-            write.SetValue(new KeyValuePair<string, string>("how", "2")).Wait();
-            write.SetValue(new KeyValuePair<string, string>("are", "3")).Wait();
-            write.SetValue(new KeyValuePair<string, string>("you", "4")).Wait();
-            Task<string> value = write.GetValue("are");
+            var writer = MetadataGrainFactory.GetGrain("0", true);
+            var reader = MetadataGrainFactory.GetGrain("0", false);
+            writer.SetValue(new KeyValuePair<string, string>("hello", "1")).Wait();
+            writer.SetValue(new KeyValuePair<string, string>("how", "2")).Wait();
+            writer.SetValue(new KeyValuePair<string, string>("are", "3")).Wait();
+            writer.SetValue(new KeyValuePair<string, string>("you", "4")).Wait();
+            Task<string> value = reader.GetValue("are");
             value.Wait();
             Console.WriteLine("\n\n{0}\n\n", value.Result);
 

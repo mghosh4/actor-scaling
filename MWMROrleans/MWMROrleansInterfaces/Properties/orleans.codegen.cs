@@ -42,7 +42,7 @@ namespace MWMROrleansInterfaces
 
         public override global::System.Boolean @IsCompatible(global::System.Int32 @interfaceId)
         {
-            return @interfaceId == -1038577650;
+            return @interfaceId == -1038577650 || @interfaceId == -1277021679;
         }
 
         protected override global::System.String @GetMethodName(global::System.Int32 @interfaceId, global::System.Int32 @methodId)
@@ -52,8 +52,8 @@ namespace MWMROrleansInterfaces
                 case -1038577650:
                     switch (@methodId)
                     {
-                        case -1732333552:
-                            return "SayHello";
+                        case 1200397339:
+                            return "SetState";
                         case -1376685924:
                             return "GetValue";
                         case 852692164:
@@ -66,14 +66,21 @@ namespace MWMROrleansInterfaces
                             throw new global::System.NotImplementedException("interfaceId=" + -1038577650 + ",methodId=" + @methodId);
                     }
 
+                case -1277021679:
+                    switch (@methodId)
+                    {
+                        default:
+                            throw new global::System.NotImplementedException("interfaceId=" + -1277021679 + ",methodId=" + @methodId);
+                    }
+
                 default:
                     throw new global::System.NotImplementedException("interfaceId=" + @interfaceId);
             }
         }
 
-        public global::System.Threading.Tasks.Task<global::System.String> @SayHello()
+        public global::System.Threading.Tasks.Task @SetState(global::Orleans.GrainState @state)
         {
-            return base.@InvokeMethodAsync<global::System.String>(-1732333552, null);
+            return base.@InvokeMethodAsync<global::System.Object>(1200397339, new global::System.Object[]{@state});
         }
 
         public global::System.Threading.Tasks.Task<global::System.String> @GetValue(global::System.String @key)
@@ -111,8 +118,8 @@ namespace MWMROrleansInterfaces
                     case -1038577650:
                         switch (@methodId)
                         {
-                            case -1732333552:
-                                return ((global::MWMROrleansInterfaces.IStatefulGrain)@grain).@SayHello().@Box();
+                            case 1200397339:
+                                return ((global::MWMROrleansInterfaces.IStatefulGrain)@grain).@SetState((global::Orleans.GrainState)@arguments[0]).@Box();
                             case -1376685924:
                                 return ((global::MWMROrleansInterfaces.IStatefulGrain)@grain).@GetValue((global::System.String)@arguments[0]).@Box();
                             case 852692164:
@@ -123,6 +130,13 @@ namespace MWMROrleansInterfaces
                                 return ((global::MWMROrleansInterfaces.IStatefulGrain)@grain).@ClearValues().@Box();
                             default:
                                 throw new global::System.NotImplementedException("interfaceId=" + -1038577650 + ",methodId=" + @methodId);
+                        }
+
+                    case -1277021679:
+                        switch (@methodId)
+                        {
+                            default:
+                                throw new global::System.NotImplementedException("interfaceId=" + -1277021679 + ",methodId=" + @methodId);
                         }
 
                     default:
@@ -173,7 +187,7 @@ namespace MWMROrleansInterfaces
 
         public override global::System.Boolean @IsCompatible(global::System.Int32 @interfaceId)
         {
-            return @interfaceId == 1340049260 || @interfaceId == -1038577650;
+            return @interfaceId == 1340049260 || @interfaceId == -1038577650 || @interfaceId == -1277021679;
         }
 
         protected override global::System.String @GetMethodName(global::System.Int32 @interfaceId, global::System.Int32 @methodId)
@@ -183,8 +197,8 @@ namespace MWMROrleansInterfaces
                 case 1340049260:
                     switch (@methodId)
                     {
-                        case -1732333552:
-                            return "SayHello";
+                        case 1200397339:
+                            return "SetState";
                         case -1376685924:
                             return "GetValue";
                         case 852692164:
@@ -200,8 +214,8 @@ namespace MWMROrleansInterfaces
                 case -1038577650:
                     switch (@methodId)
                     {
-                        case -1732333552:
-                            return "SayHello";
+                        case 1200397339:
+                            return "SetState";
                         case -1376685924:
                             return "GetValue";
                         case 852692164:
@@ -214,14 +228,21 @@ namespace MWMROrleansInterfaces
                             throw new global::System.NotImplementedException("interfaceId=" + -1038577650 + ",methodId=" + @methodId);
                     }
 
+                case -1277021679:
+                    switch (@methodId)
+                    {
+                        default:
+                            throw new global::System.NotImplementedException("interfaceId=" + -1277021679 + ",methodId=" + @methodId);
+                    }
+
                 default:
                     throw new global::System.NotImplementedException("interfaceId=" + @interfaceId);
             }
         }
 
-        public global::System.Threading.Tasks.Task<global::System.String> @SayHello()
+        public global::System.Threading.Tasks.Task @SetState(global::Orleans.GrainState @state)
         {
-            return base.@InvokeMethodAsync<global::System.String>(-1732333552, null);
+            return base.@InvokeMethodAsync<global::System.Object>(1200397339, new global::System.Object[]{@state});
         }
 
         public global::System.Threading.Tasks.Task<global::System.String> @GetValue(global::System.String @key)
@@ -259,8 +280,8 @@ namespace MWMROrleansInterfaces
                     case 1340049260:
                         switch (@methodId)
                         {
-                            case -1732333552:
-                                return ((global::MWMROrleansInterfaces.IStatefulGrainReader)@grain).@SayHello().@Box();
+                            case 1200397339:
+                                return ((global::MWMROrleansInterfaces.IStatefulGrainReader)@grain).@SetState((global::Orleans.GrainState)@arguments[0]).@Box();
                             case -1376685924:
                                 return ((global::MWMROrleansInterfaces.IStatefulGrainReader)@grain).@GetValue((global::System.String)@arguments[0]).@Box();
                             case 852692164:
@@ -276,8 +297,8 @@ namespace MWMROrleansInterfaces
                     case -1038577650:
                         switch (@methodId)
                         {
-                            case -1732333552:
-                                return ((global::MWMROrleansInterfaces.IStatefulGrainReader)@grain).@SayHello().@Box();
+                            case 1200397339:
+                                return ((global::MWMROrleansInterfaces.IStatefulGrainReader)@grain).@SetState((global::Orleans.GrainState)@arguments[0]).@Box();
                             case -1376685924:
                                 return ((global::MWMROrleansInterfaces.IStatefulGrainReader)@grain).@GetValue((global::System.String)@arguments[0]).@Box();
                             case 852692164:
@@ -288,6 +309,13 @@ namespace MWMROrleansInterfaces
                                 return ((global::MWMROrleansInterfaces.IStatefulGrainReader)@grain).@ClearValues().@Box();
                             default:
                                 throw new global::System.NotImplementedException("interfaceId=" + -1038577650 + ",methodId=" + @methodId);
+                        }
+
+                    case -1277021679:
+                        switch (@methodId)
+                        {
+                            default:
+                                throw new global::System.NotImplementedException("interfaceId=" + -1277021679 + ",methodId=" + @methodId);
                         }
 
                     default:
@@ -338,7 +366,7 @@ namespace MWMROrleansInterfaces
 
         public override global::System.Boolean @IsCompatible(global::System.Int32 @interfaceId)
         {
-            return @interfaceId == 1496158020 || @interfaceId == 1340049260 || @interfaceId == -1038577650;
+            return @interfaceId == 1496158020 || @interfaceId == 1340049260 || @interfaceId == -1038577650 || @interfaceId == -1277021679;
         }
 
         protected override global::System.String @GetMethodName(global::System.Int32 @interfaceId, global::System.Int32 @methodId)
@@ -348,8 +376,8 @@ namespace MWMROrleansInterfaces
                 case 1496158020:
                     switch (@methodId)
                     {
-                        case -1732333552:
-                            return "SayHello";
+                        case 1200397339:
+                            return "SetState";
                         case -1376685924:
                             return "GetValue";
                         case 852692164:
@@ -365,8 +393,8 @@ namespace MWMROrleansInterfaces
                 case 1340049260:
                     switch (@methodId)
                     {
-                        case -1732333552:
-                            return "SayHello";
+                        case 1200397339:
+                            return "SetState";
                         case -1376685924:
                             return "GetValue";
                         case 852692164:
@@ -382,8 +410,8 @@ namespace MWMROrleansInterfaces
                 case -1038577650:
                     switch (@methodId)
                     {
-                        case -1732333552:
-                            return "SayHello";
+                        case 1200397339:
+                            return "SetState";
                         case -1376685924:
                             return "GetValue";
                         case 852692164:
@@ -396,14 +424,21 @@ namespace MWMROrleansInterfaces
                             throw new global::System.NotImplementedException("interfaceId=" + -1038577650 + ",methodId=" + @methodId);
                     }
 
+                case -1277021679:
+                    switch (@methodId)
+                    {
+                        default:
+                            throw new global::System.NotImplementedException("interfaceId=" + -1277021679 + ",methodId=" + @methodId);
+                    }
+
                 default:
                     throw new global::System.NotImplementedException("interfaceId=" + @interfaceId);
             }
         }
 
-        public global::System.Threading.Tasks.Task<global::System.String> @SayHello()
+        public global::System.Threading.Tasks.Task @SetState(global::Orleans.GrainState @state)
         {
-            return base.@InvokeMethodAsync<global::System.String>(-1732333552, null);
+            return base.@InvokeMethodAsync<global::System.Object>(1200397339, new global::System.Object[]{@state});
         }
 
         public global::System.Threading.Tasks.Task<global::System.String> @GetValue(global::System.String @key)
@@ -441,8 +476,8 @@ namespace MWMROrleansInterfaces
                     case 1496158020:
                         switch (@methodId)
                         {
-                            case -1732333552:
-                                return ((global::MWMROrleansInterfaces.IStatefulGrainWriter)@grain).@SayHello().@Box();
+                            case 1200397339:
+                                return ((global::MWMROrleansInterfaces.IStatefulGrainWriter)@grain).@SetState((global::Orleans.GrainState)@arguments[0]).@Box();
                             case -1376685924:
                                 return ((global::MWMROrleansInterfaces.IStatefulGrainWriter)@grain).@GetValue((global::System.String)@arguments[0]).@Box();
                             case 852692164:
@@ -458,8 +493,8 @@ namespace MWMROrleansInterfaces
                     case 1340049260:
                         switch (@methodId)
                         {
-                            case -1732333552:
-                                return ((global::MWMROrleansInterfaces.IStatefulGrainWriter)@grain).@SayHello().@Box();
+                            case 1200397339:
+                                return ((global::MWMROrleansInterfaces.IStatefulGrainWriter)@grain).@SetState((global::Orleans.GrainState)@arguments[0]).@Box();
                             case -1376685924:
                                 return ((global::MWMROrleansInterfaces.IStatefulGrainWriter)@grain).@GetValue((global::System.String)@arguments[0]).@Box();
                             case 852692164:
@@ -475,8 +510,8 @@ namespace MWMROrleansInterfaces
                     case -1038577650:
                         switch (@methodId)
                         {
-                            case -1732333552:
-                                return ((global::MWMROrleansInterfaces.IStatefulGrainWriter)@grain).@SayHello().@Box();
+                            case 1200397339:
+                                return ((global::MWMROrleansInterfaces.IStatefulGrainWriter)@grain).@SetState((global::Orleans.GrainState)@arguments[0]).@Box();
                             case -1376685924:
                                 return ((global::MWMROrleansInterfaces.IStatefulGrainWriter)@grain).@GetValue((global::System.String)@arguments[0]).@Box();
                             case 852692164:
@@ -487,6 +522,13 @@ namespace MWMROrleansInterfaces
                                 return ((global::MWMROrleansInterfaces.IStatefulGrainWriter)@grain).@ClearValues().@Box();
                             default:
                                 throw new global::System.NotImplementedException("interfaceId=" + -1038577650 + ",methodId=" + @methodId);
+                        }
+
+                    case -1277021679:
+                        switch (@methodId)
+                        {
+                            default:
+                                throw new global::System.NotImplementedException("interfaceId=" + -1277021679 + ",methodId=" + @methodId);
                         }
 
                     default:

@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 
 using Orleans;
 using MWMROrleansInterfaces;
-using MWMROrleansGrains;
 
 namespace MWMROrleans
 {
@@ -48,22 +47,65 @@ namespace MWMROrleans
 
     public static class MetadataGrainFactory
     {
-        private static IStatefulGrainReader reader = new StatefulGrainReader();
-        private static IStatefulGrainWriter writer = new StatefulGrainWriter(); 
+        private static readonly Dictionary<string, IStatefulGrain> readerGrains =
+            new Dictionary<string, IStatefulGrain>();
+        private static readonly Dictionary<string, IStatefulGrain> writerGrains =
+            new Dictionary<string, IStatefulGrain>();
 
-        public static IStatefulGrain GetGrain(long primaryKey, bool readwrite = false, string grainClassNamePrefix = null)
+        public static IStatefulGrain GetGrain(string primaryKey, bool readwrite = false, string grainClassNamePrefix = null)
         {
             IStatefulGrain grain = null;
+            string dictkey = primaryKey;
+            if (readwrite == true)
+                dictkey = dictkey + "w";
+            else
+                dictkey = dictkey + "r";
+
+            if (readerGrains.ContainsKey(dictkey))
+            {
+                readerGrains.TryGetValue(dictkey, out grain);
+                return grain;
+            }
+            else if (writerGrains.ContainsKey(dictkey))
+            {
+                writerGrains.TryGetValue(dictkey, out grain);
+                return grain;
+            }
+
             if (readwrite == true)
             {
-                grain = writer;
+                grain = Orleans.GrainClient.GrainFactory.GetGrain<IStatefulGrainWriter>(dictkey, grainClassNamePrefix);
+                writerGrains.Add(dictkey, grain);
+                Console.WriteLine("\n\n{0},{1}\n\n", writerGrains.Count, readerGrains.Count);
             }
             else
             {
-                grain = reader;
+                grain = Orleans.GrainClient.GrainFactory.GetGrain<IStatefulGrainReader>(dictkey, grainClassNamePrefix);
+                readerGrains.Add(dictkey, grain);
+                Console.WriteLine("\n\n{0},{1}\n\n", writerGrains.Count, readerGrains.Count);
             }
 
             return grain;
+        }
+
+        public static List<IStatefulGrain> GetAllGrains()
+        {
+            Console.WriteLine("\n\n{0},{1}\n\n", writerGrains.Count, readerGrains.Count);
+
+            List<IStatefulGrain> grains = new List<IStatefulGrain>();
+            foreach (KeyValuePair<string, IStatefulGrain> entry in readerGrains)
+            {
+                // do something with entry.Value or entry.Key
+                grains.Add(entry.Value);
+            }
+
+            foreach (KeyValuePair<string, IStatefulGrain> entry in writerGrains)
+            {
+                // do something with entry.Value or entry.Key
+                grains.Add(entry.Value);
+            }
+
+            return grains;
         }
     }
 }
