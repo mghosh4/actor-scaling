@@ -24,7 +24,8 @@ TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR TH
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using MWMROrleans;
+
+using MWMROrleansInterfaces;
 
 namespace MWMROrleansHost
 {
@@ -46,8 +47,16 @@ namespace MWMROrleansHost
 
             Orleans.GrainClient.Initialize("DevTestClientConfiguration.xml");
 
-            var writer = MetadataGrainFactory.GetGrain("0", true);
-            var reader = MetadataGrainFactory.GetGrain("0", false);
+            var metadatagrain = Orleans.GrainClient.GrainFactory.GetGrain<IMetadataGrain>(0);
+            
+            Task<IStatefulGrain> writertsk = metadatagrain.GetGrain("1", true);
+            writertsk.Wait();
+            IStatefulGrain writer = writertsk.Result;
+            
+            Task<IStatefulGrain> readertsk = metadatagrain.GetGrain("2", false);
+            readertsk.Wait();
+            IStatefulGrain reader = readertsk.Result;
+
             writer.SetValue(new KeyValuePair<string, string>("hello", "1")).Wait();
             writer.SetValue(new KeyValuePair<string, string>("how", "2")).Wait();
             writer.SetValue(new KeyValuePair<string, string>("are", "3")).Wait();

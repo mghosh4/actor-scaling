@@ -18,6 +18,14 @@ namespace MWMROrleansInterfaces
         Task SetValue(KeyValuePair<string, string> entry);
 
         Task ClearValues();
+
+        Task RegisterReaderGrain(string key);
+
+        Task DeregisterReaderGrain(string key);
+
+        Task RegisterWriterGrain(string key);
+
+        Task DeregisterWriterGrain(string key);
     }
 
     public interface IStatefulGrainReader : IStatefulGrain
