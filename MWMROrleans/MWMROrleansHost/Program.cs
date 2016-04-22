@@ -24,6 +24,7 @@ TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR TH
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Diagnostics;
 
 using MWMROrleansInterfaces;
 
@@ -48,22 +49,40 @@ namespace MWMROrleansHost
             Orleans.GrainClient.Initialize("DevTestClientConfiguration.xml");
 
             var metadatagrain = Orleans.GrainClient.GrainFactory.GetGrain<IMetadataGrain>(0);
-            
-            Task<IStatefulGrain> writertsk = metadatagrain.GetGrain("1", true);
+
+            var stopwatch = Stopwatch.StartNew();
+            Task<IStatefulGrain> writertsk = metadatagrain.GetGrain(true, ConsistencyLevel.STRONG);
             writertsk.Wait();
             IStatefulGrain writer = writertsk.Result;
-            
-            Task<IStatefulGrain> readertsk = metadatagrain.GetGrain("2", false);
+            stopwatch.Stop();
+            Console.WriteLine("Time to create a writer {0}", stopwatch.ElapsedMilliseconds);
+
+            stopwatch.Start();
+            Task<IStatefulGrain> readertsk = metadatagrain.GetGrain(false, ConsistencyLevel.STRONG);
             readertsk.Wait();
             IStatefulGrain reader = readertsk.Result;
+            stopwatch.Stop();
+            Console.WriteLine("Time to create a reader {0}", stopwatch.ElapsedMilliseconds);
 
+            stopwatch.Start();
             writer.SetValue(new KeyValuePair<string, string>("hello", "1")).Wait();
+            stopwatch.Stop();
+            Console.WriteLine("Time to first write {0}", stopwatch.ElapsedMilliseconds);
+
             writer.SetValue(new KeyValuePair<string, string>("how", "2")).Wait();
             writer.SetValue(new KeyValuePair<string, string>("are", "3")).Wait();
+
+            stopwatch.Start();
             writer.SetValue(new KeyValuePair<string, string>("you", "4")).Wait();
+            stopwatch.Stop();
+            Console.WriteLine("Time to 4th write {0}", stopwatch.ElapsedMilliseconds);
+
+            stopwatch.Start();
             Task<string> value = reader.GetValue("are");
             value.Wait();
             Console.WriteLine("\n\n{0}\n\n", value.Result);
+            stopwatch.Stop();
+            Console.WriteLine("Time to read {0}", stopwatch.ElapsedMilliseconds);
 
             // TODO: once the previous call returns, the silo is up and running.
             //       This is the place your custom logic, for example calling client logic

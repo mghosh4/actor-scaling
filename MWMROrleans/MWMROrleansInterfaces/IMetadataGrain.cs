@@ -8,8 +8,18 @@ using Orleans;
 
 namespace MWMROrleansInterfaces
 {
+    public enum ConsistencyLevel
+    {
+        STRONG,
+        EVENTUAL,
+        READ_MY_WRITE,
+        MONOTONIC,
+        BOUNDED,
+        CAUSAL
+    }
+
     public interface IMetadataGrain : IGrainWithIntegerKey
     {
-        Task<IStatefulGrain> GetGrain(string primaryKey, bool readwrite, string grainClassNamePrefix = null);
+        Task<IStatefulGrain> GetGrain(bool readwrite, ConsistencyLevel level);
     }
 }

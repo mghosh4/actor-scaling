@@ -28,11 +28,19 @@ namespace MWMROrleansInterfaces
         Task DeregisterWriterGrain(string key);
     }
 
-    public interface IStatefulGrainReader : IStatefulGrain
+    public interface IStronglyConsistentReader : IStatefulGrain
     {
     }
 
-    public interface IStatefulGrainWriter : IStatefulGrainReader
+    public interface IStronglyConsistentWriter : IStronglyConsistentReader
+    {
+    }
+
+    public interface IEventuallyConsistentReader : IStatefulGrain
+    {
+    }
+
+    public interface IEventuallyConsistentWriter : IEventuallyConsistentReader
     {
     }
 }

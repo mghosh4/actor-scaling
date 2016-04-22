@@ -70,8 +70,7 @@ namespace MWMROrleansGrains
         }
     }
 
-    [StatelessWorker]
-    public class StatefulGrainReader : StatefulGrain, MWMROrleansInterfaces.IStatefulGrainReader
+    public class StatefulGrainReader : StatefulGrain
     {
         public Task<string> GetValue(string key)
         {
@@ -84,7 +83,19 @@ namespace MWMROrleansGrains
         }
     }
 
-    public class StatefulGrainWriter : StatefulGrainReader, MWMROrleansInterfaces.IStatefulGrainWriter
+    [StatelessWorker]
+    public class StronglyConsistentReader: StatefulGrainReader, MWMROrleansInterfaces.IStronglyConsistentReader
+    {
+
+    }
+
+    [StatelessWorker]
+    public class EventuallyConsistentReader : StatefulGrainReader, MWMROrleansInterfaces.IEventuallyConsistentReader
+    {
+
+    }
+    
+    public class StatefulGrainWriter : StatefulGrainReader
     {
         public async Task SetValue(KeyValuePair<string, string> entry)
         {
@@ -107,14 +118,14 @@ namespace MWMROrleansGrains
             foreach (string key in State.readerGrains)
             {
                 // Console.WriteLine("\n\n{0}\n\n", key);
-                IStatefulGrain stategrain = await metadatagrainfactory.GetGrain(key, false);
+                IStatefulGrain stategrain = await metadatagrainfactory.GetGrain(false, ConsistencyLevel.STRONG);
                 await stategrain.SetState(State);
             }
 
             foreach (string key in State.writerGrains)
             {
                 // Console.WriteLine("\n\n{0}\n\n", key);
-                IStatefulGrain stategrain = await metadatagrainfactory.GetGrain(key, true);
+                IStatefulGrain stategrain = await metadatagrainfactory.GetGrain(true, ConsistencyLevel.STRONG);
                 await stategrain.SetState(State);
             }
         }
@@ -170,6 +181,14 @@ namespace MWMROrleansGrains
 
             return TaskDone.Done;
         }
+    }
+
+    public class StronglyConsistentWriter : StatefulGrainWriter, MWMROrleansInterfaces.IStronglyConsistentWriter
+    {
+    }
+
+    public class EventuallyConsistentWriter : StatefulGrainWriter, MWMROrleansInterfaces.IEventuallyConsistentWriter
+    {
     }
 
     [Serializable]
