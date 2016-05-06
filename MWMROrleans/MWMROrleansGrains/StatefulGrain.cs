@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Timers;
+using System.Linq;
 using Orleans;
 using Orleans.Concurrency;
 using Orleans.Providers;
@@ -17,74 +19,117 @@ namespace MWMROrleansGrains
     {
         public override async Task OnActivateAsync()
         {
-            State.Prefs = new Dictionary<string, string>();
-            State.readerGrains = new List<string>();
-            State.writerGrains = new List<string>();
+            if (State.Prefs == null)
+                State.Prefs = new Dictionary<string, string>();
+
+            if (State.readers == null)
+                State.readers = new Dictionary<string, ConsistencyLevel>();
+
+            if (State.writers == null)
+                State.writers = new Dictionary<string, ConsistencyLevel>();
+
             await base.OnActivateAsync();
         }
 
-        public Task SetState(GrainState state)
+        public virtual Task SetState(GrainState state)
         {
             State.Prefs = (state as StatefulGrainState).Prefs;
+            State.currentContext = (state as StatefulGrainState).currentContext;
+            // Metadata grain should be doing this. This is not state for the grain to maintain
+            //State.readers = (state as StatefulGrainState).readers;
+            //State.writers = (state as StatefulGrainState).writers;
             return TaskDone.Done;
         }
 
-        public Task<string> GetValue(string key)
+        public virtual Task<GrainState> GetState()
+        {
+            return Task.FromResult<GrainState>(State);
+        }
+
+        public virtual Task<string> GetValue(string key, Context cntxt)
         {
             throw new NotImplementedException();
         }
 
-        public Task<IDictionary<string, string>> GetAllEntries()
+        public virtual Task<IDictionary<string, string>> GetAllEntries(Context cntxt)
         {
             throw new NotImplementedException();
         }
 
-        public Task SetValue(KeyValuePair<string, string> entry)
+        public virtual Task<Context> SetValue(KeyValuePair<string, string> entry)
         {
             throw new NotImplementedException();
         }
 
-        public Task ClearValues()
+        public virtual Task<Context> ClearValues()
         {
             throw new NotImplementedException();
         }
 
-        public Task RegisterReaderGrain(string key)
+        public virtual Task RegisterReaderGrain(string key, ConsistencyLevel level)
         {
-            throw new NotImplementedException();
+            if (State.readers.ContainsKey(key) == true)
+            {
+                throw new Exception();
+            }
+
+            State.readers.Add(key, level);
+
+            return TaskDone.Done;
         }
 
-        public Task DeregisterReaderGrain(string key)
+        public virtual Task DeregisterReaderGrain(string key)
         {
-            throw new NotImplementedException();
+            if (State.readers.ContainsKey(key) == false)
+            {
+                throw new KeyNotFoundException();
+            }
+
+            State.readers.Remove(key);
+
+            return TaskDone.Done;
         }
 
-        public Task RegisterWriterGrain(string key)
+        public virtual Task RegisterWriterGrain(string key, ConsistencyLevel level)
         {
-            throw new NotImplementedException();
+            if (State.writers.ContainsKey(key) == true)
+            {
+                throw new Exception();
+            }
+
+            State.writers.Add(key, level);
+
+            return TaskDone.Done;
         }
 
-        public Task DeregisterWriterGrain(string key)
+        public virtual Task DeregisterWriterGrain(string key)
         {
-            throw new NotImplementedException();
+            if (State.writers.ContainsKey(key) == false)
+            {
+                throw new KeyNotFoundException();
+            }
+
+            State.writers.Remove(key);
+
+            return TaskDone.Done;
         }
     }
 
     public class StatefulGrainReader : StatefulGrain
     {
-        public Task<string> GetValue(string key)
+        public override async Task<string> GetValue(string key, Context cntxt)
         {
-            return Task.FromResult(State.Prefs[key]);
+            return State.Prefs[key];
         }
 
-        public Task<IDictionary<string, string>> GetAllEntries()
+        public override async Task<IDictionary<string, string>> GetAllEntries(Context cntxt)
         {
-            return Task.FromResult(State.Prefs);
+            return State.Prefs;
         }
     }
 
     [StatelessWorker]
-    public class StronglyConsistentReader: StatefulGrainReader, MWMROrleansInterfaces.IStronglyConsistentReader
+    public class StronglyConsistentReader : StatefulGrainReader, MWMROrleansInterfaces.IStronglyConsistentReader
     {
 
     }
@@ -94,100 +139,117 @@ namespace MWMROrleansGrains
     {
 
     }
+
+    [StatelessWorker]
+    public class ReadMyWriteReader : StatefulGrainReader, MWMROrleansInterfaces.IReadMyWriteReader
+    {
+        private async Task updateState(Context cntxt)
+        {
+            if (State.currentContext.timestamp < cntxt.timestamp)
+            {
+                var metadatagrainfactory = GrainFactory.GetGrain<IMetadataGrain>(0);
+                //TODO: this may break if the reader is created before any writer
+                IStatefulGrain writergrain = await metadatagrainfactory.GetGrain(State.writers.First().Key, true, State.writers.First().Value);
+                GrainState state = await writergrain.GetState();
+                await SetState(state);
+            }
+        }
+
+        public override async Task<string> GetValue(string key, Context cntxt)
+        {
+            await updateState(cntxt);
+            return State.Prefs[key];
+        }
+
+        public override async Task<IDictionary<string, string>> GetAllEntries(Context cntxt)
+        {
+            await updateState(cntxt);
+            return State.Prefs;
+        }
+    }
+
+    [StatelessWorker]
+    public class BoundedStalenessReader : StatefulGrainReader, MWMROrleansInterfaces.IReadMyWriteReader
+    {
+        public override async Task OnActivateAsync()
+        {
+            Timer periodicRun = new Timer();
+            periodicRun.Elapsed += new ElapsedEventHandler(periodicDataUpdate);
+            periodicRun.Interval = 5000;
+            periodicRun.Enabled = true;
+
+            await base.OnActivateAsync();
+        }
+
+        public async void periodicDataUpdate(object source, ElapsedEventArgs e)
+        {
+            var metadatagrainfactory = GrainFactory.GetGrain<IMetadataGrain>(0);
+            //TODO: this may break if the reader is created before any writer
+            IStatefulGrain writergrain = await metadatagrainfactory.GetGrain(State.writers.First().Key, true, State.writers.First().Value);
+            GrainState state = await writergrain.GetState();
+            await SetState(state);
+        }
+    }
     
     public class StatefulGrainWriter : StatefulGrainReader
     {
-        public async Task SetValue(KeyValuePair<string, string> entry)
+        public async Task<Context> SetValue(KeyValuePair<string, string> entry)
         {
             Console.WriteLine("\n\n{0}\n\n", entry.ToString());
             State.Prefs.Add(entry);
 
             await updateOtherGrainState();
+
+            Context cntxt;
+            cntxt.timestamp = DateTime.Now;
+            State.currentContext.timestamp = cntxt.timestamp;
+
+            return cntxt;
         }
 
-        public async Task ClearValues()
+        public async Task<Context> ClearValues()
         {
             State.Prefs.Clear();
 
             await updateOtherGrainState();
+
+            Context cntxt;
+            cntxt.timestamp = DateTime.Now;
+            State.currentContext.timestamp = cntxt.timestamp;
+
+            return cntxt;
         }
 
         private async Task updateOtherGrainState()
         {
             var metadatagrainfactory = GrainFactory.GetGrain<IMetadataGrain>(0);
-            foreach (string key in State.readerGrains)
+            foreach (KeyValuePair<string, ConsistencyLevel> entry in State.readers)
             {
-                // Console.WriteLine("\n\n{0}\n\n", key);
-                IStatefulGrain stategrain = await metadatagrainfactory.GetGrain(false, ConsistencyLevel.STRONG);
-                await stategrain.SetState(State);
+                switch(entry.Value)
+                {
+                    case ConsistencyLevel.STRONG:
+                        IStatefulGrain stategrain = await metadatagrainfactory.GetGrain(entry.Key, false, entry.Value);
+                        await stategrain.SetState(State);
+                        break;
+                }
             }
 
-            foreach (string key in State.writerGrains)
+            foreach (KeyValuePair<string, ConsistencyLevel> entry in State.writers)
             {
-                // Console.WriteLine("\n\n{0}\n\n", key);
-                IStatefulGrain stategrain = await metadatagrainfactory.GetGrain(true, ConsistencyLevel.STRONG);
-                await stategrain.SetState(State);
+                switch (entry.Value)
+                {
+                    case ConsistencyLevel.STRONG:
+                        IStatefulGrain stategrain = await metadatagrainfactory.GetGrain(entry.Key, true, entry.Value);
+                        await stategrain.SetState(State);
+                        break;
+                    case ConsistencyLevel.EVENTUAL:
+                        throw new NotImplementedException();
+                }
             }
-        }
-
-        public Task RegisterReaderGrain(string key)
-        {
-            // Console.WriteLine("\n\nRegisterReaderGrain {0}\n\n", key);
-
-            if (State.readerGrains.Contains(key) == true)
-            {
-                throw new Exception();
-            }
-
-            State.readerGrains.Add(key);
-
-            // Console.WriteLine("\n\nDone\n\n");
-
-            return TaskDone.Done;
-        }
-
-        public Task DeregisterReaderGrain(string key)
-        {
-            if (State.readerGrains.Contains(key) == false)
-            {
-                throw new KeyNotFoundException();
-            }
-
-            State.readerGrains.Remove(key);
-
-            return TaskDone.Done;
-        }
-
-        public Task RegisterWriterGrain(string key)
-        {
-            if (State.writerGrains.Contains(key) == true)
-            {
-                throw new Exception();
-            }
-
-            State.writerGrains.Add(key);
-
-            return TaskDone.Done;
-        }
-
-        public Task DeregisterWriterGrain(string key)
-        {
-            if (State.writerGrains.Contains(key) == false)
-            {
-                throw new KeyNotFoundException();
-            }
-
-            State.writerGrains.Remove(key);
-
-            return TaskDone.Done;
         }
     }
 
     public class StronglyConsistentWriter : StatefulGrainWriter, MWMROrleansInterfaces.IStronglyConsistentWriter
-    {
-    }
-
-    public class EventuallyConsistentWriter : StatefulGrainWriter, MWMROrleansInterfaces.IEventuallyConsistentWriter
     {
     }
 
@@ -196,8 +258,10 @@ namespace MWMROrleansGrains
     {
         public IDictionary<string, string> Prefs { get; set; }
 
-        public IList<string> readerGrains { get; set; }
+        public Context currentContext;
 
-        public IList<string> writerGrains { get; set; }
+        public IDictionary<string, ConsistencyLevel> readers { get; set; }
+
+        public IDictionary<string, ConsistencyLevel> writers { get; set; }
     }
 }

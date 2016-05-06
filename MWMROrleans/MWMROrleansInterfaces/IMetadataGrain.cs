@@ -21,5 +21,6 @@ namespace MWMROrleansInterfaces
     public interface IMetadataGrain : IGrainWithIntegerKey
     {
         Task<IStatefulGrain> GetGrain(bool readwrite, ConsistencyLevel level);
+        Task<IStatefulGrain> GetGrain(string primaryKey, bool readwrite, ConsistencyLevel level);
     }
 }

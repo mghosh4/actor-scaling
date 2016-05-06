@@ -58,14 +58,16 @@ namespace MWMROrleansHost
             Console.WriteLine("Time to create a writer {0}", stopwatch.ElapsedMilliseconds);
 
             stopwatch.Start();
-            Task<IStatefulGrain> readertsk = metadatagrain.GetGrain(false, ConsistencyLevel.STRONG);
+            Task<IStatefulGrain> readertsk = metadatagrain.GetGrain(false, ConsistencyLevel.READ_MY_WRITE);
             readertsk.Wait();
             IStatefulGrain reader = readertsk.Result;
             stopwatch.Stop();
             Console.WriteLine("Time to create a reader {0}", stopwatch.ElapsedMilliseconds);
 
             stopwatch.Start();
-            writer.SetValue(new KeyValuePair<string, string>("hello", "1")).Wait();
+            Task<Context> tskcnt = writer.SetValue(new KeyValuePair<string, string>("hello", "1"));
+            tskcnt.Wait();
+            Context cnt = tskcnt.Result;
             stopwatch.Stop();
             Console.WriteLine("Time to first write {0}", stopwatch.ElapsedMilliseconds);
 
@@ -78,7 +80,7 @@ namespace MWMROrleansHost
             Console.WriteLine("Time to 4th write {0}", stopwatch.ElapsedMilliseconds);
 
             stopwatch.Start();
-            Task<string> value = reader.GetValue("are");
+            Task<string> value = reader.GetValue("are", cnt);
             value.Wait();
             Console.WriteLine("\n\n{0}\n\n", value.Result);
             stopwatch.Stop();

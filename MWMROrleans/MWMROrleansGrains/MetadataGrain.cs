@@ -16,48 +16,65 @@ namespace MWMROrleansGrains
     [StorageProvider(ProviderName = "MemoryStore")]
     public class MetadataGrain : Grain<MetadataGrainState>, MWMROrleansInterfaces.IMetadataGrain
     {
+        public const string STRONG_WRITER = "strongwriter";
+        public const string STRONG_READER = "strongreader";
+        public const string RMW_READER = "readmyreadreader";
+        public const string EVENTUAL_READER = "eventualreader";
+        public const string BOUNDED_STALENESS_READER = "boundedstalenessreader";
+
         public override async Task OnActivateAsync()
         {
-            State.stronglyConsistentReaders = new List<string>();
-            State.stronglyConsistentReaders = new List<string>();
-            State.eventuallyConsistentReaders = new List<string>();
+            if (State.writers == null)
+                State.writers = new Dictionary<string, ConsistencyLevel>();
+
+            if (State.readers == null)
+                State.readers = new Dictionary<string, ConsistencyLevel>();
+
+            State.numInstances = State.writers.Count + State.readers.Count;
+
             await base.OnActivateAsync();
         }
 
         public async Task<IStatefulGrain> GetGrain(bool readwrite, ConsistencyLevel level)
         {
             IStatefulGrain grain = null;
-            string primaryKey;
+            string primaryKey = null;
             if (readwrite == true)
             {
                 switch(level)
                 {
                     case ConsistencyLevel.STRONG:
-                        primaryKey = "strongwriter";
+                        //TODO: Implement policy to see if new grain is needed.
+                        //For now, we create a new grain each time
+                        primaryKey = MetadataGrain.STRONG_WRITER + State.numInstances;
+                        State.numInstances++;
                         grain = GrainFactory.GetGrain<IStronglyConsistentWriter>(primaryKey);
-                        if (State.stronglyConsistentWriters.Contains(primaryKey) == false)
+                        foreach (KeyValuePair<string, ConsistencyLevel> entry in State.readers)
                         {
-                            foreach (string key in State.stronglyConsistentReaders)
-                            {
-                                // Console.WriteLine("\n\nRegister Reader Grain{0}\n\n", key);
-                                await grain.RegisterReaderGrain(key);
-                            }
-
-                            foreach (string key in State.stronglyConsistentWriters)
-                            {
-                                // Console.WriteLine("\n\nRegister Writer Grain{0}\n\n", key);
-                                await grain.RegisterWriterGrain(key);
-
-                                var writergrain = GrainFactory.GetGrain<IStronglyConsistentWriter>(key);
-                                await writergrain.RegisterReaderGrain(primaryKey);
-                            }
-
-                            State.stronglyConsistentWriters.Add(primaryKey);
+                            await grain.RegisterReaderGrain(entry.Key, entry.Value);
                         }
 
+                        foreach (KeyValuePair<string, ConsistencyLevel> entry in State.writers)
+                        {
+                            await grain.RegisterWriterGrain(entry.Key, entry.Value);
+
+                            IStatefulGrain writergrain = null;
+                            switch(entry.Value)
+                            {
+                                case ConsistencyLevel.STRONG:
+                                    writergrain = GrainFactory.GetGrain<IStronglyConsistentWriter>(entry.Key);
+                                    break;
+                                case ConsistencyLevel.EVENTUAL:
+                                    throw new NotImplementedException();
+                            }
+
+                            await writergrain.RegisterWriterGrain(primaryKey, ConsistencyLevel.STRONG);
+                        }
+
+                        State.writers.Add(primaryKey, ConsistencyLevel.STRONG);
                         break;
                     case ConsistencyLevel.EVENTUAL:
-                        throw new Exception();
+                        throw new NotImplementedException();
                 }
                 
             }
@@ -66,23 +83,82 @@ namespace MWMROrleansGrains
                 switch (level)
                 {
                     case ConsistencyLevel.STRONG:
-                        primaryKey = "strongreader";
+                        //TODO: Implement policy to see if new grain is needed.
+                        //For now, we create a new grain each time
+                        primaryKey = MetadataGrain.STRONG_READER + State.numInstances;
+                        State.numInstances++;
                         grain = GrainFactory.GetGrain<IStronglyConsistentReader>(primaryKey);
-                        if (State.stronglyConsistentReaders.Contains(primaryKey) == false)
-                        {
-                            foreach (string key in State.stronglyConsistentWriters)
-                            {
-                                // Console.WriteLine("\n\nRegister Reader Grain {0}\n\n", key);
-                                var writergrain = GrainFactory.GetGrain<IStronglyConsistentWriter>(key);
-                                await writergrain.RegisterReaderGrain(primaryKey);
-                                // Console.WriteLine("\n\nDone\n\n");
-                            }
-
-                            State.stronglyConsistentReaders.Add(primaryKey);
-                        }
+                        break;
+                    case ConsistencyLevel.READ_MY_WRITE:
+                        primaryKey = MetadataGrain.RMW_READER + State.numInstances;
+                        State.numInstances++;
+                        grain = GrainFactory.GetGrain<IReadMyWriteReader>(primaryKey);
+                        break;
+                    case ConsistencyLevel.BOUNDED:
+                        primaryKey = MetadataGrain.BOUNDED_STALENESS_READER + State.numInstances;
+                        State.numInstances++;
+                        grain = GrainFactory.GetGrain<IBoundedStalenessReader>(primaryKey);
                         break;
                     case ConsistencyLevel.EVENTUAL:
-                        primaryKey = "eventualreader";
+                        primaryKey = MetadataGrain.EVENTUAL_READER + State.numInstances;
+                        State.numInstances++;
+                        grain = GrainFactory.GetGrain<IEventuallyConsistentReader>(primaryKey);
+                        break;
+                }
+
+                KeyValuePair<string, ConsistencyLevel> strongwriter = State.writers.First(writer => writer.Value == ConsistencyLevel.STRONG);
+                await grain.RegisterWriterGrain(strongwriter.Key, strongwriter.Value);
+
+                foreach (KeyValuePair<string, ConsistencyLevel> entry in State.writers)
+                {
+                    IStatefulGrain writergrain = null;
+                    switch (entry.Value)
+                    {
+                        case ConsistencyLevel.STRONG:
+                            writergrain = GrainFactory.GetGrain<IStronglyConsistentWriter>(entry.Key);
+                            break;
+                        case ConsistencyLevel.EVENTUAL:
+                            throw new NotImplementedException();
+                    }
+
+                    await writergrain.RegisterReaderGrain(primaryKey, level);
+                }
+
+                State.readers.Add(primaryKey, ConsistencyLevel.STRONG);
+            }
+
+            return grain;
+        }
+
+        public async Task<IStatefulGrain> GetGrain(string primaryKey, bool readwrite, ConsistencyLevel level)
+        {
+            IStatefulGrain grain = null;
+            if (readwrite == true)
+            {
+                switch (level)
+                {
+                    case ConsistencyLevel.STRONG:
+                        grain = GrainFactory.GetGrain<IStronglyConsistentWriter>(primaryKey);
+                        break;
+                    case ConsistencyLevel.EVENTUAL:
+                        throw new NotImplementedException();
+                }
+
+            }
+            else
+            {
+                switch (level)
+                {
+                    case ConsistencyLevel.STRONG:
+                        grain = GrainFactory.GetGrain<IStronglyConsistentReader>(primaryKey);
+                        break;
+                    case ConsistencyLevel.READ_MY_WRITE:
+                        grain = GrainFactory.GetGrain<IReadMyWriteReader>(primaryKey);
+                        break;
+                    case ConsistencyLevel.BOUNDED:
+                        grain = GrainFactory.GetGrain<IBoundedStalenessReader>(primaryKey);
+                        break;
+                    case ConsistencyLevel.EVENTUAL:
                         grain = GrainFactory.GetGrain<IEventuallyConsistentReader>(primaryKey);
                         break;
                 }
@@ -94,11 +170,11 @@ namespace MWMROrleansGrains
     
     public class MetadataGrainState : GrainState
     {
-        public IList<string> stronglyConsistentReaders { get; set; }
+        public IDictionary<string, ConsistencyLevel> writers { get; set; }
 
-        public IList<string> stronglyConsistentWriters { get; set; }
+        public IDictionary<string, ConsistencyLevel> readers { get; set; }
 
-        public IList<string> eventuallyConsistentReaders { get; set; }
+        public long numInstances;
     }
 
 }

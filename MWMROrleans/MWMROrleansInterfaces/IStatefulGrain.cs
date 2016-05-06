@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using Orleans;
@@ -5,25 +6,27 @@ using Orleans;
 namespace MWMROrleansInterfaces
 {
     /// <summary>
-    /// Grain interface IGrain1
+    /// Grain interface IStatefulGrain
     /// </summary>
     public interface IStatefulGrain : IGrainWithStringKey
     {
         Task SetState(GrainState state);
 
-        Task<string> GetValue(string key);
+        Task<GrainState> GetState();
 
-        Task<IDictionary<string, string>> GetAllEntries();
+        Task<string> GetValue(string key, Context cntxt);
 
-        Task SetValue(KeyValuePair<string, string> entry);
+        Task<IDictionary<string, string>> GetAllEntries(Context cntxt);
 
-        Task ClearValues();
+        Task<Context> SetValue(KeyValuePair<string, string> entry);
 
-        Task RegisterReaderGrain(string key);
+        Task<Context> ClearValues();
+
+        Task RegisterReaderGrain(string key, ConsistencyLevel level);
 
         Task DeregisterReaderGrain(string key);
 
-        Task RegisterWriterGrain(string key);
+        Task RegisterWriterGrain(string key, ConsistencyLevel level);
 
         Task DeregisterWriterGrain(string key);
     }
@@ -32,15 +35,24 @@ namespace MWMROrleansInterfaces
     {
     }
 
-    public interface IStronglyConsistentWriter : IStronglyConsistentReader
-    {
-    }
-
     public interface IEventuallyConsistentReader : IStatefulGrain
     {
     }
 
-    public interface IEventuallyConsistentWriter : IEventuallyConsistentReader
+    public interface IReadMyWriteReader : IStatefulGrain
     {
+    }
+
+    public interface IBoundedStalenessReader : IStatefulGrain
+    {
+    }
+
+    public interface IStronglyConsistentWriter : IStronglyConsistentReader
+    {
+    }
+
+    public struct Context
+    {
+        public DateTime timestamp;
     }
 }
