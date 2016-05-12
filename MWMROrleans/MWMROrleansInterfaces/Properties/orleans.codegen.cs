@@ -310,6 +310,9 @@ namespace MWMROrleansInterfaces
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Orleans-CodeGenerator", "1.1.0.0"), global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute, global::Orleans.CodeGeneration.SerializerAttribute(typeof (global::MWMROrleansInterfaces.Context)), global::Orleans.CodeGeneration.RegisterSerializerAttribute]
     internal class OrleansCodeGenMWMROrleansInterfaces_ContextSerializer
     {
+        private static readonly global::System.Reflection.FieldInfo field1 = typeof (global::MWMROrleansInterfaces.Context).@GetField("id", (System.@Reflection.@BindingFlags.@Public | System.@Reflection.@BindingFlags.@NonPublic | System.@Reflection.@BindingFlags.@Instance));
+        private static readonly global::System.Func<global::MWMROrleansInterfaces.Context, global::System.Int64> getField1 = (global::System.Func<global::MWMROrleansInterfaces.Context, global::System.Int64>)global::Orleans.Serialization.SerializationManager.@GetGetter(field1);
+        private static readonly global::Orleans.Serialization.SerializationManager.ValueTypeSetter<global::MWMROrleansInterfaces.Context, global::System.Int64> setField1 = (global::Orleans.Serialization.SerializationManager.ValueTypeSetter<global::MWMROrleansInterfaces.Context, global::System.Int64>)global::Orleans.Serialization.SerializationManager.@GetValueSetter(field1);
         private static readonly global::System.Reflection.FieldInfo field0 = typeof (global::MWMROrleansInterfaces.Context).@GetField("timestamp", (System.@Reflection.@BindingFlags.@Public | System.@Reflection.@BindingFlags.@NonPublic | System.@Reflection.@BindingFlags.@Instance));
         private static readonly global::System.Func<global::MWMROrleansInterfaces.Context, global::System.DateTime> getField0 = (global::System.Func<global::MWMROrleansInterfaces.Context, global::System.DateTime>)global::Orleans.Serialization.SerializationManager.@GetGetter(field0);
         private static readonly global::Orleans.Serialization.SerializationManager.ValueTypeSetter<global::MWMROrleansInterfaces.Context, global::System.DateTime> setField0 = (global::Orleans.Serialization.SerializationManager.ValueTypeSetter<global::MWMROrleansInterfaces.Context, global::System.DateTime>)global::Orleans.Serialization.SerializationManager.@GetValueSetter(field0);
@@ -318,6 +321,7 @@ namespace MWMROrleansInterfaces
         {
             global::MWMROrleansInterfaces.Context input = ((global::MWMROrleansInterfaces.Context)original);
             global::MWMROrleansInterfaces.Context result = default (global::MWMROrleansInterfaces.Context);
+            setField1(ref result, getField1(input));
             setField0(ref result, getField0(input));
             global::Orleans.@Serialization.@SerializationContext.@Current.@RecordObject(original, result);
             return result;
@@ -327,6 +331,7 @@ namespace MWMROrleansInterfaces
         public static void Serializer(global::System.Object untypedInput, global::Orleans.Serialization.BinaryTokenStreamWriter stream, global::System.Type expected)
         {
             global::MWMROrleansInterfaces.Context input = (global::MWMROrleansInterfaces.Context)untypedInput;
+            global::Orleans.Serialization.SerializationManager.@SerializeInner(getField1(input), stream, typeof (global::System.Int64));
             global::Orleans.Serialization.SerializationManager.@SerializeInner(getField0(input), stream, typeof (global::System.DateTime));
         }
 
@@ -334,6 +339,7 @@ namespace MWMROrleansInterfaces
         public static global::System.Object Deserializer(global::System.Type expected, global::Orleans.Serialization.BinaryTokenStreamReader stream)
         {
             global::MWMROrleansInterfaces.Context result = default (global::MWMROrleansInterfaces.Context);
+            setField1(ref result, (global::System.Int64)global::Orleans.Serialization.SerializationManager.@DeserializeInner(typeof (global::System.Int64), stream));
             setField0(ref result, (global::System.DateTime)global::Orleans.Serialization.SerializationManager.@DeserializeInner(typeof (global::System.DateTime), stream));
             return (global::MWMROrleansInterfaces.Context)result;
         }

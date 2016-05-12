@@ -119,6 +119,14 @@ namespace MWMROrleansGrains
     {
         public override async Task<string> GetValue(string key, Context cntxt)
         {
+            /*if (cntxt.id == 1)
+            {
+                Console.WriteLine("Sleeping..........{0}", cntxt.id);
+                await Task.Delay(60000);
+                Console.WriteLine("Done Sleeping..........{0}", cntxt.id);
+            }
+
+            Console.WriteLine("{0}: Querying for key {1} {2}", cntxt.id, key, State.Prefs.Count);*/
             return State.Prefs[key];
         }
 
@@ -128,19 +136,16 @@ namespace MWMROrleansGrains
         }
     }
 
-    [StatelessWorker]
     public class StronglyConsistentReader : StatefulGrainReader, MWMROrleansInterfaces.IStronglyConsistentReader
     {
 
     }
 
-    [StatelessWorker]
     public class EventuallyConsistentReader : StatefulGrainReader, MWMROrleansInterfaces.IEventuallyConsistentReader
     {
 
     }
 
-    [StatelessWorker]
     public class ReadMyWriteReader : StatefulGrainReader, MWMROrleansInterfaces.IReadMyWriteReader
     {
         private async Task updateState(Context cntxt)
@@ -168,7 +173,6 @@ namespace MWMROrleansGrains
         }
     }
 
-    [StatelessWorker]
     public class BoundedStalenessReader : StatefulGrainReader, MWMROrleansInterfaces.IReadMyWriteReader
     {
         public override async Task OnActivateAsync()
@@ -202,6 +206,7 @@ namespace MWMROrleansGrains
 
             Context cntxt;
             cntxt.timestamp = DateTime.Now;
+            cntxt.id = 0;
             State.currentContext.timestamp = cntxt.timestamp;
 
             return cntxt;
@@ -215,6 +220,7 @@ namespace MWMROrleansGrains
 
             Context cntxt;
             cntxt.timestamp = DateTime.Now;
+            cntxt.id = 0;
             State.currentContext.timestamp = cntxt.timestamp;
 
             return cntxt;

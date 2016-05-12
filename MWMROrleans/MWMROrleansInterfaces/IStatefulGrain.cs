@@ -54,5 +54,6 @@ namespace MWMROrleansInterfaces
     public struct Context
     {
         public DateTime timestamp;
+        public long id;
     }
 }

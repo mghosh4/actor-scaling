@@ -58,7 +58,7 @@ namespace MWMROrleansHost
             Console.WriteLine("Time to create a writer {0}", stopwatch.ElapsedMilliseconds);
 
             stopwatch.Start();
-            Task<IStatefulGrain> readertsk = metadatagrain.GetGrain(false, ConsistencyLevel.READ_MY_WRITE);
+            Task<IStatefulGrain> readertsk = metadatagrain.GetGrain(false, ConsistencyLevel.STRONG);
             readertsk.Wait();
             IStatefulGrain reader = readertsk.Result;
             stopwatch.Stop();
@@ -79,6 +79,13 @@ namespace MWMROrleansHost
             stopwatch.Stop();
             Console.WriteLine("Time to 4th write {0}", stopwatch.ElapsedMilliseconds);
 
+            Task task1 = readData(reader, cnt, "how", 1);
+            Task.Delay(30).Wait();
+            Task task2 = readData(reader, cnt, "are", 2);
+
+            task1.Wait();
+            task2.Wait();
+
             stopwatch.Start();
             Task<string> value = reader.GetValue("are", cnt);
             value.Wait();
@@ -94,6 +101,21 @@ namespace MWMROrleansHost
             Console.ReadLine();
 
             hostDomain.DoCallBack(ShutdownSilo);
+        }
+
+        private static Task readData(IStatefulGrain reader, Context cnt, string find, int id)
+        {
+            return Task.Run(() =>
+            {
+                var stopwatch = Stopwatch.StartNew();
+                cnt.id = id;
+                Task<string> value = reader.GetValue(find, cnt);
+                value.Wait();
+                Console.WriteLine("\n\n{0}:{1}\n\n", id, value.Result);
+                stopwatch.Stop();
+                Console.WriteLine("Time to read {0}:{1}", id, stopwatch.ElapsedMilliseconds);
+                return 0;
+            });
         }
 
         static void InitSilo(string[] args)
