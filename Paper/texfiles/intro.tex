@@ -1,7 +1,12 @@
-\section{Introduction}
+\section{Thoughts}
 \label{sec:intro}
 
-Actor Frameworks: The USP of actor framework is the horizontal scaling it can support. When it comes to stateful actors, scaling them is a challenge because of state reconciliation overheads. The problem has similarities with storage systems where replication is necessary to scale read/write performance. 
+\subsection{Problem Statement}
+
+Actor Frameworks: Actors provide a shared nothing abstraction which allows horizontal scaling. Scaling stateful actors is a challenge because of state reconciliation overheads. The problem has similarities with storage systems where replication is necessary to scale read/write performance. Some key differences are:
+
+1) In a LAN setting, the number of instantiated actors can be much larger than the total number of read/write replicas -- Can we show some plots based on data?
+2) 
 
 Given a latency SLA and read write requirement, we need to decide the following things: 1) Whether to instantiate a new actor, and 2) Consistency level of the new actor
 
@@ -11,25 +16,4 @@ This work is different from Pileus because it does not handle replica creation, 
 
 In ``Take me to your leader'' work, given a set of possible sites, it tries to figure out replica locations, roles and leader. This calculation happens periodically and the replica roles are changed. They do not consider SLAs though.
 
-\section{Motivation}
-
-
-\section{Our solution}
-
-
-\section{Implementation}  
-
-  
-\section{Evaluation}
-
-
-\section{Related work}
-
-
-\section{Conclusion}
-
-  
-\section*{Appendix}
-
-
-if needed
+\subsection{Paper Format}
