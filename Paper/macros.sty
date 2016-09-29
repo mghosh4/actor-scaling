@@ -1,0 +1,226 @@
+
+%% Set of Real numbers
+\newcommand{\reals}{\mathbb{R}}
+\newcommand{\nnreals}{\reals^{+}}
+\newcommand{\naturalnumbers}{\mathbb{N}}
+\newcommand{\integers}{\mathbb{Z}}
+\newcommand{\harmonic}[1]{H_{#1}}
+
+\newcommand{\squishlist}{
+   \begin{list}{$\bullet$}
+    { \setlength{\itemsep}{0pt}      \setlength{\parsep}{3pt}
+      \setlength{\topsep}{3pt}       \setlength{\partopsep}{0pt}
+      \setlength{\leftmargin}{1.5em} \setlength{\labelwidth}{1em}
+      \setlength{\labelsep}{0.5em} } }
+
+\newcommand{\squishend}{
+    \end{list}  }
+
+\newcommand{\nset}{k}
+\newcommand{\nbin}{n}
+\newcommand{\ncol}{p}
+\newcommand{\setA}{Q}
+\newcommand{\setB}{B}
+\newcommand{\sampleColor}{M}
+\newcommand{\groundset}{U}
+\newcommand{\allocation}{X}
+\newcommand{\countarray}{C}
+\newcommand{\segmentmetadata}{S}
+\newcommand{\subgs}{U}
+\newcommand{\nelt}{m}
+\newcommand{\maxfreq}{f}
+\newcommand{\freq}[1]{f_{#1}}
+
+\newcommand{\cardin}[1]{\left | #1  \right |}
+\newcommand{\cost}{\mathsf{cost}}
+\newcommand{\labelf}{\pi}
+\newcommand{\elt}{x}
+\newcommand{\ceil}[1]{\lceil #1 \rceil}
+\newcommand{\brc}[1]{\{ #1 \}}
+
+\newcommand{\rlsum}[1]{\eta(#1)}
+\newcommand{\rnode}{r}
+\newcommand{\dist}[3]{d_{#1}(#2,#3)}
+
+
+% Graphs and Trees
+\newcommand{\Graph}{G}
+\newcommand{\Vertices}{V}
+\newcommand{\Edges}{E}
+\newcommand{\edge}{e}
+\newcommand{\node}{\nu}
+\newcommand{\Tree}{T}
+\newcommand{\BTree}{\mathcal{T}}
+\newcommand{\internalnodes}{V'}
+\newcommand{\level}{l}
+\newcommand{\minlevel}{minL}
+
+
+
+%% Etal
+\newcommand{\etal}{\textit{et al.}\@\xspace}
+
+%% Such-that vertical bar separator in sets. The \operatorname
+%% ensures nice space.
+\newcommand{\suchthat}{:}
+\newcommand{\where}{:}
+\newcommand{\given}{\operatorname{|}}
+
+%%%%
+
+%% Problem and Algorithm names
+\newcommand{\MBS}{\textsc{ModifiedBestFit}\xspace}
+\newcommand{\kmerge}{\textsc{k-WayMerging}\xspace}
+\newcommand{\submodmerge}{\textsc{SubmodularMerging}\xspace}
+\newcommand{\OTA}{\textsc{Opt-Tree-Assign}\xspace}
+\newcommand{\SDA}{\textsc{Simple Data Arrangement}\xspace}
+
+
+\usepackage{xifthen}
+
+\newcommand{\modifiedfit}[1][]{%
+\ifthenelse{\equal{#1}{}}{\textsc{ModifiedFit}\xspace}{\textsc{ModifiedFit}(#1)\xspace}%
+}
+
+\newcommand{\adaptivereplication}[1][]{%
+\ifthenelse{\equal{#1}{}}{\textsc{AdaptiveReplication}\xspace}{\textsc{AdaptiveReplication}(#1)\xspace}%
+}
+
+\newcommand{\falgo}[1][]{%
+\ifthenelse{\equal{#1}{}}{\textsc{FreqBinaryMerging}\xspace}{\textsc{FreqBinaryMerging}(#1)\xspace}%
+}
+
+\newcommand{\buildmaxheap}[1][]{%
+\ifthenelse{\isempty{#1}}{\textsc{BuildMaxHeap}\xspace}
+{\textsc{BuildMaxHeap}(#1)\xspace}%
+}
+
+\newcommand{\emptymaxheap}[1][]{%
+\ifthenelse{\isempty{#1}}{\textsc{Empty}\xspace}
+{\textsc{Empty}(#1)\xspace}%
+}
+
+\newcommand{\extractmaxheap}[1][]{%
+\ifthenelse{\isempty{#1}}{\textsc{Extract}\xspace}
+{\textsc{Extract}(#1)\xspace}%
+}
+
+\newcommand{\insertmaxheap}[1][]{%
+\ifthenelse{\isempty{#1}}{\textsc{Insert}\xspace}
+{\textsc{Insert}(#1)\xspace}%
+}
+
+\newcommand{\choosebin}[1][]{%
+\ifthenelse{\isempty{#1}}{\textsc{ChooseHistoricalNode}\xspace}
+{\textsc{ChooseHistoricalNode}(#1)\xspace}%
+}
+
+\newcommand{\allocate}[1][]{%
+\ifthenelse{\isempty{#1}}{\textsc{Allocate}\xspace}
+{\textsc{Allocate}(#1)\xspace}%
+}
+
+\newcommand{\length}[1][]{%
+\ifthenelse{\isempty{#1}}{\textsc{Length}\xspace}
+{\textsc{Length}(#1)\xspace}%
+}
+
+\newcommand{\loadsegment}[1][]{%
+\ifthenelse{\isempty{#1}}{\textsc{LoadSegment}\xspace}
+{\textsc{LoadSegment}(#1)\xspace}%
+}
+
+\newcommand{\samelevel}{\textsc{BalanceTree}\xspace}
+\newcommand{\largestmatch}{\textsc{LargestMatch}\xspace}
+\newcommand{\smallin}{\textsc{SmallestInput}\xspace}
+\newcommand{\smallout}{\textsc{SmallestOutput}\xspace}
+\newcommand{\random}{\textsc{Random}\xspace}
+
+\newcommand{\samelevelinacr}{BT(I)}
+\newcommand{\sameleveloutacr}{BT(O)}
+\newcommand{\smallinacr}{SI}
+\newcommand{\smalloutacr}{SO}
+
+%%%%%
+
+\newcommand{\nphard}{NP-hard\xspace}
+\newcommand{\npcomplete}{NP-complete\xspace}
+
+\newcommand{\optoms}[1]{\mathsf{opt}_s(#1)}
+\newcommand{\optota}[2]{\mathsf{opt}_a(#1,#2)}
+\newcommand{\costactual}[1]{\mathsf{cost}_{actual}(#1)}
+\newcommand{\opt}{\mathsf{OPT}}
+\newcommand{\costshort}{\mathsf{Cost}}
+\newcommand{\optlb}{\mathsf{L_{OPT}}}
+
+%\cost_{actual}(\Tree, \labelf, \setA_1, \ldots, \setA_\nset) 
+
+\newcommand{\remove}[1]{}
+
+
+
+%%%%% Theorems and proofs etc
+
+\newtheorem{theorem}{Theorem}[section]%
+\newtheorem{lemma}[theorem]{Lemma}%
+\newtheorem{corollary}[theorem]{Corollary}%
+\theoremstyle{definition}
+\newtheorem*{example}{Working Example}
+
+\renewcommand{\qedsymbol}{$\blacksquare$}
+%\newenvironment{proof}{\trivlist\item[]\emph{Proof}:}%
+ %                 {\unskip\nobreak\hskip 1em plus 1fil\nobreak%
+   %                        \rule{2mm}{2mm}%$\Box$
+      %                     \parfillskip=0pt%
+         %                  \endtrivlist}
+
+
+
+% Naming algorithms
+\newcommand{\algo}[1]{\ensuremath{\operatorname{\text{\tt #1}}}}
+
+% Editing notes
+\newcommand{\note}[1]{{\large\bf\tt\color{red}#1}}
+
+% Labels and references
+
+%% Sections
+\newcommand{\seclab}[1]{\label{section:#1}}
+\newcommand{\secref}[1]{Section~\ref{section:#1}}
+
+%% Appendix
+\newcommand{\applab}[1]{\label{appendix:#1}}
+\newcommand{\appref}[1]{Appendix~\ref{appendix:#1}}
+
+%%Figures
+\newcommand{\figlab}[1]{\label{figure:#1}}
+\newcommand{\figref}[1]{Figure~\ref{figure:#1}}
+
+%% Lemmas
+\newcommand{\lemlab}[1]{\label{lemma:#1}}
+\newcommand{\lemref}[1]{Lemma~\ref{lemma:#1}}
+
+%% Equations
+\newcommand{\equationlab}[1]{\label{equation:#1}}
+\newcommand{\equationref}[1]{equation (\ref{equation:#1})}
+
+%% Theorems
+\newcommand{\thmlab}[1]{\label{theorem:#1}}
+\newcommand{\thmref}[1]{Theorem~\ref{theorem:#1}}
+
+%% Corollary
+\newcommand{\corlab}[1]{\label{corollary:#1}}
+\newcommand{\corref}[1]{Corollary~\ref{corollary:#1}}
+
+%% Example
+\newcommand{\exmpllab}[1]{\label{example:#1}}
+\newcommand{\exmplref}[1]{Example~\ref{example:#1}}
+
+%% Algo
+\newcommand{\algolab}[1]{\label{algo:#1}}
+\newcommand{\algoref}[1]{Algorithm~\ref{algo:#1}}
+
+\renewcommand{\paragraph}[1]{ \subsubsection*{#1} }
+%\renewcommand{\thesubsubsection}{\alph{subsubsection})}
+
+\newcommand{\newtext}[1]{{#1}}

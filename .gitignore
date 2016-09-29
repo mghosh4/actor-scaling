@@ -197,3 +197,9 @@ FakesAssemblies/
 # Visual Studio 6 workspace options file
 *.opt
 
+# Latex Files
+*.aux
+*.bbl
+*.blg
+*.log
+

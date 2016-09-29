@@ -18,7 +18,7 @@ namespace MWMROrleansGrains
     {
         public const string STRONG_WRITER = "strongwriter";
         public const string STRONG_READER = "strongreader";
-        public const string RMW_READER = "readmyreadreader";
+        public const string RMW_READER = "readmywritereader";
         public const string EVENTUAL_READER = "eventualreader";
         public const string BOUNDED_STALENESS_READER = "boundedstalenessreader";
 
