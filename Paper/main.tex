@@ -13,10 +13,10 @@
 % the .sty file from the LaTeX source template, so that people can
 % more easily include the .sty file into an existing document.  Also
 % changed to more closely follow the style guidelines as represented
-% by the Word sample file. 
+% by the Word sample file.
 
 % Note that since 2010, USENIX does not require endnotes. If you want
-% foot of page notes, don't include the endnotes package in the 
+% foot of page notes, don't include the endnotes package in the
 % usepackage command, below.
 
 % This version uses the latex2e styles, not the very ancient 2.09 stuff.
@@ -34,6 +34,24 @@
 
 \usepackage{macros}
 \usepackage{usenix,epsfig,endnotes}
+
+
+\newif\ifsubmission
+%\submissiontrue % or
+\submissionfalse
+
+\ifsubmission
+\newcommand{\todo}[1]{}
+\newcommand{\cut}[1]{}
+
+\else
+% mark things that still need to be done
+% change this to the second definition prior to submission
+% to ensure that all TO DO items are removed from the text
+\newcommand{\todo}[1]{\textcolor{red}{\bf [TODO: #1]}}
+\newcommand{\cut}[1]{}
+\fi
+
 
 \begin{document}
 
