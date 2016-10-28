@@ -1628,6 +1628,511 @@ namespace MWMROrleansInterfaces
             }
         }
     }
+
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Orleans-CodeGenerator", "1.1.0.0"), global::System.SerializableAttribute, global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute, global::Orleans.CodeGeneration.GrainReferenceAttribute(typeof (global::MWMROrleansInterfaces.IWhereInTheWorldData))]
+    internal class OrleansCodeGenWhereInTheWorldDataReference : global::Orleans.Runtime.GrainReference, global::MWMROrleansInterfaces.IWhereInTheWorldData
+    {
+        protected @OrleansCodeGenWhereInTheWorldDataReference(global::Orleans.Runtime.GrainReference @other): base (@other)
+        {
+        }
+
+        protected @OrleansCodeGenWhereInTheWorldDataReference(global::System.Runtime.Serialization.SerializationInfo @info, global::System.Runtime.Serialization.StreamingContext @context): base (@info, @context)
+        {
+        }
+
+        protected override global::System.Int32 InterfaceId
+        {
+            get
+            {
+                return -1314149748;
+            }
+        }
+
+        public override global::System.String InterfaceName
+        {
+            get
+            {
+                return "global::MWMROrleansInterfaces.IWhereInTheWorldData";
+            }
+        }
+
+        public override global::System.Boolean @IsCompatible(global::System.Int32 @interfaceId)
+        {
+            return @interfaceId == -1314149748 || @interfaceId == 1294813229 || @interfaceId == -1087870377 || @interfaceId == -1038577650 || @interfaceId == -1277021679;
+        }
+
+        protected override global::System.String @GetMethodName(global::System.Int32 @interfaceId, global::System.Int32 @methodId)
+        {
+            switch (@interfaceId)
+            {
+                case -1314149748:
+                    switch (@methodId)
+                    {
+                        case -1829284004:
+                            return "StartLease";
+                        case 1200397339:
+                            return "SetState";
+                        case -454132849:
+                            return "GetState";
+                        case -633486763:
+                            return "GetValue";
+                        case 1383116710:
+                            return "GetAllEntries";
+                        case -562543526:
+                            return "SetValue";
+                        case -291970914:
+                            return "ClearValues";
+                        case -1334497665:
+                            return "RegisterReaderGrain";
+                        case 2004399442:
+                            return "DeregisterReaderGrain";
+                        case -29357609:
+                            return "RegisterWriterGrain";
+                        case -435906145:
+                            return "DeregisterWriterGrain";
+                        default:
+                            throw new global::System.NotImplementedException("interfaceId=" + -1314149748 + ",methodId=" + @methodId);
+                    }
+
+                case 1294813229:
+                    switch (@methodId)
+                    {
+                        case 1200397339:
+                            return "SetState";
+                        case -454132849:
+                            return "GetState";
+                        case -633486763:
+                            return "GetValue";
+                        case 1383116710:
+                            return "GetAllEntries";
+                        case -562543526:
+                            return "SetValue";
+                        case -291970914:
+                            return "ClearValues";
+                        case -1334497665:
+                            return "RegisterReaderGrain";
+                        case 2004399442:
+                            return "DeregisterReaderGrain";
+                        case -29357609:
+                            return "RegisterWriterGrain";
+                        case -435906145:
+                            return "DeregisterWriterGrain";
+                        default:
+                            throw new global::System.NotImplementedException("interfaceId=" + 1294813229 + ",methodId=" + @methodId);
+                    }
+
+                case -1087870377:
+                    switch (@methodId)
+                    {
+                        case 1200397339:
+                            return "SetState";
+                        case -454132849:
+                            return "GetState";
+                        case -633486763:
+                            return "GetValue";
+                        case 1383116710:
+                            return "GetAllEntries";
+                        case -562543526:
+                            return "SetValue";
+                        case -291970914:
+                            return "ClearValues";
+                        case -1334497665:
+                            return "RegisterReaderGrain";
+                        case 2004399442:
+                            return "DeregisterReaderGrain";
+                        case -29357609:
+                            return "RegisterWriterGrain";
+                        case -435906145:
+                            return "DeregisterWriterGrain";
+                        default:
+                            throw new global::System.NotImplementedException("interfaceId=" + -1087870377 + ",methodId=" + @methodId);
+                    }
+
+                case -1038577650:
+                    switch (@methodId)
+                    {
+                        case 1200397339:
+                            return "SetState";
+                        case -454132849:
+                            return "GetState";
+                        case -633486763:
+                            return "GetValue";
+                        case 1383116710:
+                            return "GetAllEntries";
+                        case -562543526:
+                            return "SetValue";
+                        case -291970914:
+                            return "ClearValues";
+                        case -1334497665:
+                            return "RegisterReaderGrain";
+                        case 2004399442:
+                            return "DeregisterReaderGrain";
+                        case -29357609:
+                            return "RegisterWriterGrain";
+                        case -435906145:
+                            return "DeregisterWriterGrain";
+                        default:
+                            throw new global::System.NotImplementedException("interfaceId=" + -1038577650 + ",methodId=" + @methodId);
+                    }
+
+                case -1277021679:
+                    switch (@methodId)
+                    {
+                        default:
+                            throw new global::System.NotImplementedException("interfaceId=" + -1277021679 + ",methodId=" + @methodId);
+                    }
+
+                default:
+                    throw new global::System.NotImplementedException("interfaceId=" + @interfaceId);
+            }
+        }
+
+        public global::System.Threading.Tasks.Task @StartLease(global::System.DateTime @time)
+        {
+            return base.@InvokeMethodAsync<global::System.Object>(-1829284004, new global::System.Object[]{@time});
+        }
+
+        public global::System.Threading.Tasks.Task @SetState(global::Orleans.GrainState @state)
+        {
+            return base.@InvokeMethodAsync<global::System.Object>(1200397339, new global::System.Object[]{@state});
+        }
+
+        public global::System.Threading.Tasks.Task<global::Orleans.GrainState> @GetState()
+        {
+            return base.@InvokeMethodAsync<global::Orleans.GrainState>(-454132849, null);
+        }
+
+        public global::System.Threading.Tasks.Task<global::System.String> @GetValue(global::System.String @key, global::MWMROrleansInterfaces.Context @cntxt)
+        {
+            return base.@InvokeMethodAsync<global::System.String>(-633486763, new global::System.Object[]{@key, @cntxt});
+        }
+
+        public global::System.Threading.Tasks.Task<global::System.Collections.Generic.IDictionary<global::System.String, global::System.String>> @GetAllEntries(global::MWMROrleansInterfaces.Context @cntxt)
+        {
+            return base.@InvokeMethodAsync<global::System.Collections.Generic.IDictionary<global::System.String, global::System.String>>(1383116710, new global::System.Object[]{@cntxt});
+        }
+
+        public global::System.Threading.Tasks.Task<global::MWMROrleansInterfaces.Context> @SetValue(global::System.Collections.Generic.KeyValuePair<global::System.String, global::System.String> @entry)
+        {
+            return base.@InvokeMethodAsync<global::MWMROrleansInterfaces.Context>(-562543526, new global::System.Object[]{@entry});
+        }
+
+        public global::System.Threading.Tasks.Task<global::MWMROrleansInterfaces.Context> @ClearValues()
+        {
+            return base.@InvokeMethodAsync<global::MWMROrleansInterfaces.Context>(-291970914, null);
+        }
+
+        public global::System.Threading.Tasks.Task @RegisterReaderGrain(global::System.String @key, global::MWMROrleansInterfaces.ConsistencyLevel @level)
+        {
+            return base.@InvokeMethodAsync<global::System.Object>(-1334497665, new global::System.Object[]{@key, @level});
+        }
+
+        public global::System.Threading.Tasks.Task @DeregisterReaderGrain(global::System.String @key)
+        {
+            return base.@InvokeMethodAsync<global::System.Object>(2004399442, new global::System.Object[]{@key});
+        }
+
+        public global::System.Threading.Tasks.Task @RegisterWriterGrain(global::System.String @key, global::MWMROrleansInterfaces.ConsistencyLevel @level)
+        {
+            return base.@InvokeMethodAsync<global::System.Object>(-29357609, new global::System.Object[]{@key, @level});
+        }
+
+        public global::System.Threading.Tasks.Task @DeregisterWriterGrain(global::System.String @key)
+        {
+            return base.@InvokeMethodAsync<global::System.Object>(-435906145, new global::System.Object[]{@key});
+        }
+    }
+
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Orleans-CodeGenerator", "1.1.0.0"), global::Orleans.CodeGeneration.MethodInvokerAttribute("global::MWMROrleansInterfaces.IWhereInTheWorldData", -1314149748, typeof (global::MWMROrleansInterfaces.IWhereInTheWorldData)), global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute]
+    internal class OrleansCodeGenWhereInTheWorldDataMethodInvoker : global::Orleans.CodeGeneration.IGrainMethodInvoker
+    {
+        public global::System.Threading.Tasks.Task<global::System.Object> @Invoke(global::Orleans.Runtime.IAddressable @grain, global::System.Int32 @interfaceId, global::System.Int32 @methodId, global::System.Object[] @arguments)
+        {
+            try
+            {
+                if (@grain == null)
+                    throw new global::System.ArgumentNullException("grain");
+                switch (@interfaceId)
+                {
+                    case -1314149748:
+                        switch (@methodId)
+                        {
+                            case -1829284004:
+                                return ((global::MWMROrleansInterfaces.IWhereInTheWorldData)@grain).@StartLease((global::System.DateTime)@arguments[0]).@Box();
+                            case 1200397339:
+                                return ((global::MWMROrleansInterfaces.IWhereInTheWorldData)@grain).@SetState((global::Orleans.GrainState)@arguments[0]).@Box();
+                            case -454132849:
+                                return ((global::MWMROrleansInterfaces.IWhereInTheWorldData)@grain).@GetState().@Box();
+                            case -633486763:
+                                return ((global::MWMROrleansInterfaces.IWhereInTheWorldData)@grain).@GetValue((global::System.String)@arguments[0], (global::MWMROrleansInterfaces.Context)@arguments[1]).@Box();
+                            case 1383116710:
+                                return ((global::MWMROrleansInterfaces.IWhereInTheWorldData)@grain).@GetAllEntries((global::MWMROrleansInterfaces.Context)@arguments[0]).@Box();
+                            case -562543526:
+                                return ((global::MWMROrleansInterfaces.IWhereInTheWorldData)@grain).@SetValue((global::System.Collections.Generic.KeyValuePair<global::System.String, global::System.String>)@arguments[0]).@Box();
+                            case -291970914:
+                                return ((global::MWMROrleansInterfaces.IWhereInTheWorldData)@grain).@ClearValues().@Box();
+                            case -1334497665:
+                                return ((global::MWMROrleansInterfaces.IWhereInTheWorldData)@grain).@RegisterReaderGrain((global::System.String)@arguments[0], (global::MWMROrleansInterfaces.ConsistencyLevel)@arguments[1]).@Box();
+                            case 2004399442:
+                                return ((global::MWMROrleansInterfaces.IWhereInTheWorldData)@grain).@DeregisterReaderGrain((global::System.String)@arguments[0]).@Box();
+                            case -29357609:
+                                return ((global::MWMROrleansInterfaces.IWhereInTheWorldData)@grain).@RegisterWriterGrain((global::System.String)@arguments[0], (global::MWMROrleansInterfaces.ConsistencyLevel)@arguments[1]).@Box();
+                            case -435906145:
+                                return ((global::MWMROrleansInterfaces.IWhereInTheWorldData)@grain).@DeregisterWriterGrain((global::System.String)@arguments[0]).@Box();
+                            default:
+                                throw new global::System.NotImplementedException("interfaceId=" + -1314149748 + ",methodId=" + @methodId);
+                        }
+
+                    case 1294813229:
+                        switch (@methodId)
+                        {
+                            case 1200397339:
+                                return ((global::MWMROrleansInterfaces.IWhereInTheWorldData)@grain).@SetState((global::Orleans.GrainState)@arguments[0]).@Box();
+                            case -454132849:
+                                return ((global::MWMROrleansInterfaces.IWhereInTheWorldData)@grain).@GetState().@Box();
+                            case -633486763:
+                                return ((global::MWMROrleansInterfaces.IWhereInTheWorldData)@grain).@GetValue((global::System.String)@arguments[0], (global::MWMROrleansInterfaces.Context)@arguments[1]).@Box();
+                            case 1383116710:
+                                return ((global::MWMROrleansInterfaces.IWhereInTheWorldData)@grain).@GetAllEntries((global::MWMROrleansInterfaces.Context)@arguments[0]).@Box();
+                            case -562543526:
+                                return ((global::MWMROrleansInterfaces.IWhereInTheWorldData)@grain).@SetValue((global::System.Collections.Generic.KeyValuePair<global::System.String, global::System.String>)@arguments[0]).@Box();
+                            case -291970914:
+                                return ((global::MWMROrleansInterfaces.IWhereInTheWorldData)@grain).@ClearValues().@Box();
+                            case -1334497665:
+                                return ((global::MWMROrleansInterfaces.IWhereInTheWorldData)@grain).@RegisterReaderGrain((global::System.String)@arguments[0], (global::MWMROrleansInterfaces.ConsistencyLevel)@arguments[1]).@Box();
+                            case 2004399442:
+                                return ((global::MWMROrleansInterfaces.IWhereInTheWorldData)@grain).@DeregisterReaderGrain((global::System.String)@arguments[0]).@Box();
+                            case -29357609:
+                                return ((global::MWMROrleansInterfaces.IWhereInTheWorldData)@grain).@RegisterWriterGrain((global::System.String)@arguments[0], (global::MWMROrleansInterfaces.ConsistencyLevel)@arguments[1]).@Box();
+                            case -435906145:
+                                return ((global::MWMROrleansInterfaces.IWhereInTheWorldData)@grain).@DeregisterWriterGrain((global::System.String)@arguments[0]).@Box();
+                            default:
+                                throw new global::System.NotImplementedException("interfaceId=" + 1294813229 + ",methodId=" + @methodId);
+                        }
+
+                    case -1087870377:
+                        switch (@methodId)
+                        {
+                            case 1200397339:
+                                return ((global::MWMROrleansInterfaces.IWhereInTheWorldData)@grain).@SetState((global::Orleans.GrainState)@arguments[0]).@Box();
+                            case -454132849:
+                                return ((global::MWMROrleansInterfaces.IWhereInTheWorldData)@grain).@GetState().@Box();
+                            case -633486763:
+                                return ((global::MWMROrleansInterfaces.IWhereInTheWorldData)@grain).@GetValue((global::System.String)@arguments[0], (global::MWMROrleansInterfaces.Context)@arguments[1]).@Box();
+                            case 1383116710:
+                                return ((global::MWMROrleansInterfaces.IWhereInTheWorldData)@grain).@GetAllEntries((global::MWMROrleansInterfaces.Context)@arguments[0]).@Box();
+                            case -562543526:
+                                return ((global::MWMROrleansInterfaces.IWhereInTheWorldData)@grain).@SetValue((global::System.Collections.Generic.KeyValuePair<global::System.String, global::System.String>)@arguments[0]).@Box();
+                            case -291970914:
+                                return ((global::MWMROrleansInterfaces.IWhereInTheWorldData)@grain).@ClearValues().@Box();
+                            case -1334497665:
+                                return ((global::MWMROrleansInterfaces.IWhereInTheWorldData)@grain).@RegisterReaderGrain((global::System.String)@arguments[0], (global::MWMROrleansInterfaces.ConsistencyLevel)@arguments[1]).@Box();
+                            case 2004399442:
+                                return ((global::MWMROrleansInterfaces.IWhereInTheWorldData)@grain).@DeregisterReaderGrain((global::System.String)@arguments[0]).@Box();
+                            case -29357609:
+                                return ((global::MWMROrleansInterfaces.IWhereInTheWorldData)@grain).@RegisterWriterGrain((global::System.String)@arguments[0], (global::MWMROrleansInterfaces.ConsistencyLevel)@arguments[1]).@Box();
+                            case -435906145:
+                                return ((global::MWMROrleansInterfaces.IWhereInTheWorldData)@grain).@DeregisterWriterGrain((global::System.String)@arguments[0]).@Box();
+                            default:
+                                throw new global::System.NotImplementedException("interfaceId=" + -1087870377 + ",methodId=" + @methodId);
+                        }
+
+                    case -1038577650:
+                        switch (@methodId)
+                        {
+                            case 1200397339:
+                                return ((global::MWMROrleansInterfaces.IWhereInTheWorldData)@grain).@SetState((global::Orleans.GrainState)@arguments[0]).@Box();
+                            case -454132849:
+                                return ((global::MWMROrleansInterfaces.IWhereInTheWorldData)@grain).@GetState().@Box();
+                            case -633486763:
+                                return ((global::MWMROrleansInterfaces.IWhereInTheWorldData)@grain).@GetValue((global::System.String)@arguments[0], (global::MWMROrleansInterfaces.Context)@arguments[1]).@Box();
+                            case 1383116710:
+                                return ((global::MWMROrleansInterfaces.IWhereInTheWorldData)@grain).@GetAllEntries((global::MWMROrleansInterfaces.Context)@arguments[0]).@Box();
+                            case -562543526:
+                                return ((global::MWMROrleansInterfaces.IWhereInTheWorldData)@grain).@SetValue((global::System.Collections.Generic.KeyValuePair<global::System.String, global::System.String>)@arguments[0]).@Box();
+                            case -291970914:
+                                return ((global::MWMROrleansInterfaces.IWhereInTheWorldData)@grain).@ClearValues().@Box();
+                            case -1334497665:
+                                return ((global::MWMROrleansInterfaces.IWhereInTheWorldData)@grain).@RegisterReaderGrain((global::System.String)@arguments[0], (global::MWMROrleansInterfaces.ConsistencyLevel)@arguments[1]).@Box();
+                            case 2004399442:
+                                return ((global::MWMROrleansInterfaces.IWhereInTheWorldData)@grain).@DeregisterReaderGrain((global::System.String)@arguments[0]).@Box();
+                            case -29357609:
+                                return ((global::MWMROrleansInterfaces.IWhereInTheWorldData)@grain).@RegisterWriterGrain((global::System.String)@arguments[0], (global::MWMROrleansInterfaces.ConsistencyLevel)@arguments[1]).@Box();
+                            case -435906145:
+                                return ((global::MWMROrleansInterfaces.IWhereInTheWorldData)@grain).@DeregisterWriterGrain((global::System.String)@arguments[0]).@Box();
+                            default:
+                                throw new global::System.NotImplementedException("interfaceId=" + -1038577650 + ",methodId=" + @methodId);
+                        }
+
+                    case -1277021679:
+                        switch (@methodId)
+                        {
+                            default:
+                                throw new global::System.NotImplementedException("interfaceId=" + -1277021679 + ",methodId=" + @methodId);
+                        }
+
+                    default:
+                        throw new global::System.NotImplementedException("interfaceId=" + @interfaceId);
+                }
+            }
+            catch (global::System.Exception exception)
+            {
+                return global::Orleans.Async.TaskUtility.@Faulted(exception);
+            }
+        }
+
+        public global::System.Int32 InterfaceId
+        {
+            get
+            {
+                return -1314149748;
+            }
+        }
+    }
+
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Orleans-CodeGenerator", "1.1.0.0"), global::System.SerializableAttribute, global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute, global::Orleans.CodeGeneration.GrainReferenceAttribute(typeof (global::MWMROrleansInterfaces.IWITWDMetadataGrain))]
+    internal class OrleansCodeGenWITWDMetadataGrainReference : global::Orleans.Runtime.GrainReference, global::MWMROrleansInterfaces.IWITWDMetadataGrain
+    {
+        protected @OrleansCodeGenWITWDMetadataGrainReference(global::Orleans.Runtime.GrainReference @other): base (@other)
+        {
+        }
+
+        protected @OrleansCodeGenWITWDMetadataGrainReference(global::System.Runtime.Serialization.SerializationInfo @info, global::System.Runtime.Serialization.StreamingContext @context): base (@info, @context)
+        {
+        }
+
+        protected override global::System.Int32 InterfaceId
+        {
+            get
+            {
+                return -698110863;
+            }
+        }
+
+        public override global::System.String InterfaceName
+        {
+            get
+            {
+                return "global::MWMROrleansInterfaces.IWITWDMetadataGrain";
+            }
+        }
+
+        public override global::System.Boolean @IsCompatible(global::System.Int32 @interfaceId)
+        {
+            return @interfaceId == -698110863 || @interfaceId == -165421008;
+        }
+
+        protected override global::System.String @GetMethodName(global::System.Int32 @interfaceId, global::System.Int32 @methodId)
+        {
+            switch (@interfaceId)
+            {
+                case -698110863:
+                    switch (@methodId)
+                    {
+                        case -1303693824:
+                            return "GetNearestFullReplica";
+                        case -1446789174:
+                            return "GetAllFullReplicas";
+                        case 499177615:
+                            return "GetGrain";
+                        case 58988437:
+                            return "GetGrain";
+                        default:
+                            throw new global::System.NotImplementedException("interfaceId=" + -698110863 + ",methodId=" + @methodId);
+                    }
+
+                case -165421008:
+                    switch (@methodId)
+                    {
+                        case 499177615:
+                            return "GetGrain";
+                        case 58988437:
+                            return "GetGrain";
+                        default:
+                            throw new global::System.NotImplementedException("interfaceId=" + -165421008 + ",methodId=" + @methodId);
+                    }
+
+                default:
+                    throw new global::System.NotImplementedException("interfaceId=" + @interfaceId);
+            }
+        }
+
+        public global::System.Threading.Tasks.Task<global::MWMROrleansInterfaces.IWhereInTheWorldData> @GetNearestFullReplica()
+        {
+            return base.@InvokeMethodAsync<global::MWMROrleansInterfaces.IWhereInTheWorldData>(-1303693824, null);
+        }
+
+        public global::System.Threading.Tasks.Task<global::System.Collections.Generic.List<global::System.String>> @GetAllFullReplicas()
+        {
+            return base.@InvokeMethodAsync<global::System.Collections.Generic.List<global::System.String>>(-1446789174, null);
+        }
+
+        public global::System.Threading.Tasks.Task<global::MWMROrleansInterfaces.IStatefulGrain> @GetGrain(global::System.Boolean @readwrite, global::MWMROrleansInterfaces.ConsistencyLevel @level)
+        {
+            return base.@InvokeMethodAsync<global::MWMROrleansInterfaces.IStatefulGrain>(499177615, new global::System.Object[]{@readwrite, @level});
+        }
+
+        public global::System.Threading.Tasks.Task<global::MWMROrleansInterfaces.IStatefulGrain> @GetGrain(global::System.String @primaryKey, global::System.Boolean @readwrite, global::MWMROrleansInterfaces.ConsistencyLevel @level)
+        {
+            return base.@InvokeMethodAsync<global::MWMROrleansInterfaces.IStatefulGrain>(58988437, new global::System.Object[]{@primaryKey, @readwrite, @level});
+        }
+    }
+
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Orleans-CodeGenerator", "1.1.0.0"), global::Orleans.CodeGeneration.MethodInvokerAttribute("global::MWMROrleansInterfaces.IWITWDMetadataGrain", -698110863, typeof (global::MWMROrleansInterfaces.IWITWDMetadataGrain)), global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute]
+    internal class OrleansCodeGenWITWDMetadataGrainMethodInvoker : global::Orleans.CodeGeneration.IGrainMethodInvoker
+    {
+        public global::System.Threading.Tasks.Task<global::System.Object> @Invoke(global::Orleans.Runtime.IAddressable @grain, global::System.Int32 @interfaceId, global::System.Int32 @methodId, global::System.Object[] @arguments)
+        {
+            try
+            {
+                if (@grain == null)
+                    throw new global::System.ArgumentNullException("grain");
+                switch (@interfaceId)
+                {
+                    case -698110863:
+                        switch (@methodId)
+                        {
+                            case -1303693824:
+                                return ((global::MWMROrleansInterfaces.IWITWDMetadataGrain)@grain).@GetNearestFullReplica().@Box();
+                            case -1446789174:
+                                return ((global::MWMROrleansInterfaces.IWITWDMetadataGrain)@grain).@GetAllFullReplicas().@Box();
+                            case 499177615:
+                                return ((global::MWMROrleansInterfaces.IWITWDMetadataGrain)@grain).@GetGrain((global::System.Boolean)@arguments[0], (global::MWMROrleansInterfaces.ConsistencyLevel)@arguments[1]).@Box();
+                            case 58988437:
+                                return ((global::MWMROrleansInterfaces.IWITWDMetadataGrain)@grain).@GetGrain((global::System.String)@arguments[0], (global::System.Boolean)@arguments[1], (global::MWMROrleansInterfaces.ConsistencyLevel)@arguments[2]).@Box();
+                            default:
+                                throw new global::System.NotImplementedException("interfaceId=" + -698110863 + ",methodId=" + @methodId);
+                        }
+
+                    case -165421008:
+                        switch (@methodId)
+                        {
+                            case 499177615:
+                                return ((global::MWMROrleansInterfaces.IWITWDMetadataGrain)@grain).@GetGrain((global::System.Boolean)@arguments[0], (global::MWMROrleansInterfaces.ConsistencyLevel)@arguments[1]).@Box();
+                            case 58988437:
+                                return ((global::MWMROrleansInterfaces.IWITWDMetadataGrain)@grain).@GetGrain((global::System.String)@arguments[0], (global::System.Boolean)@arguments[1], (global::MWMROrleansInterfaces.ConsistencyLevel)@arguments[2]).@Box();
+                            default:
+                                throw new global::System.NotImplementedException("interfaceId=" + -165421008 + ",methodId=" + @methodId);
+                        }
+
+                    default:
+                        throw new global::System.NotImplementedException("interfaceId=" + @interfaceId);
+                }
+            }
+            catch (global::System.Exception exception)
+            {
+                return global::Orleans.Async.TaskUtility.@Faulted(exception);
+            }
+        }
+
+        public global::System.Int32 InterfaceId
+        {
+            get
+            {
+                return -698110863;
+            }
+        }
+    }
 }
 #pragma warning restore 162
 #pragma warning restore 219

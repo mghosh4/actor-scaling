@@ -48,6 +48,20 @@ namespace MWMROrleansHost
 
             Orleans.GrainClient.Initialize("DevTestClientConfiguration.xml");
 
+            BasicTest();
+
+            // TODO: once the previous call returns, the silo is up and running.
+            //       This is the place your custom logic, for example calling client logic
+            //       or initializing an HTTP front end for accepting incoming requests.
+
+            Console.WriteLine("Orleans Silo is running.\nPress Enter to terminate...");
+            Console.ReadLine();
+
+            hostDomain.DoCallBack(ShutdownSilo);
+        }
+
+        private static void BasicTest()
+        {
             var metadatagrain = Orleans.GrainClient.GrainFactory.GetGrain<IMetadataGrain>(0);
 
             var stopwatch = Stopwatch.StartNew();
@@ -92,15 +106,6 @@ namespace MWMROrleansHost
             Console.WriteLine("\n\n{0}\n\n", value.Result);
             stopwatch.Stop();
             Console.WriteLine("Time to read {0}", stopwatch.ElapsedMilliseconds);
-
-            // TODO: once the previous call returns, the silo is up and running.
-            //       This is the place your custom logic, for example calling client logic
-            //       or initializing an HTTP front end for accepting incoming requests.
-
-            Console.WriteLine("Orleans Silo is running.\nPress Enter to terminate...");
-            Console.ReadLine();
-
-            hostDomain.DoCallBack(ShutdownSilo);
         }
 
         private static Task readData(IStatefulGrain reader, Context cnt, string find, int id)

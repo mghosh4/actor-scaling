@@ -31,29 +31,10 @@ namespace MWMROrleansInterfaces
         Task DeregisterWriterGrain(string key);
     }
 
-    public interface IStronglyConsistentReader : IStatefulGrain
-    {
-    }
-
-    public interface IEventuallyConsistentReader : IStatefulGrain
-    {
-    }
-
-    public interface IReadMyWriteReader : IStatefulGrain
-    {
-    }
-
-    public interface IBoundedStalenessReader : IStatefulGrain
-    {
-    }
-
-    public interface IStronglyConsistentWriter : IStronglyConsistentReader
-    {
-    }
-
     public struct Context
     {
         public DateTime timestamp;
         public long id;
     }
+
 }
