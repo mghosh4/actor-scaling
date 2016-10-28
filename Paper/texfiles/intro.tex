@@ -3,17 +3,28 @@
 
 \subsection{Problem Statement}
 
-Actor Frameworks: Actors provide a shared nothing abstraction which allows horizontal scaling. Scaling stateful actors is a challenge because of state reconciliation overheads. The problem has similarities with storage systems where replication is necessary to scale read/write performance. Some key differences are:
+Actor Frameworks: Actors provide a shared nothing abstraction that allows horizontal scaling. Scaling stateful actors is a challenge because of state reconciliation overheads. The problem has similarities with storage systems where replication is necessary to scale read/write performance. Some key differences are:
+\todo{Let's define key terms before using to make things clear: actor and  stateful(and stateless) -- talk about mixing computation and
+state}
+
+\todo{frame actors in orleans: virtual actors, silos, etc}
 
 1) In a LAN setting, the number of instantiated actors can be much larger than the total number of read/write replicas -- Can we show some plots based on data?
-2) 
+\todo{How would we do this? Add replicas in a k-v or DB and show they don't scale as well as an actor framework?}
+2) \todo{Execution / threading model is different. A DB will typically have many threads/workers reading and writing on the same
+item. For main memory systems this is often bound by the number of threads/cores on the physical server.  For Orleans,
+the execution of an Actor is single threaded (even thought it is not pinned to a core). }
+
 
 Given a latency SLA and read write requirement, we need to decide the following things: 1) Whether to instantiate a new actor, and 2) Consistency level of the new actor
+\todo{expand on our SLA and r/w requirements.}
 
-We can probably break down the problem. In the first instance the user can provide client SLAs with both consistency and latency similar to Pileus and we need to propose an algorithm which decides whether to instantiate an actor or not. As a next step, we can remove consistency from the SLA and see if we can decide the consistency from the latency SLA
+We can probably break down the problem. In the first instance the user can provide client SLAs with both consistency and latency similar to Pileus and we need to propose an algorithm which decides whether to instantiate an actor or not. As a next step, we can remove consistency from the SLA and see if we can decide the consistency from the latency SLA.
 
 This work is different from Pileus because it does not handle replica creation, leader election which our work needs to consider in an online manner
 
 In ``Take me to your leader'' work, given a set of possible sites, it tries to figure out replica locations, roles and leader. This calculation happens periodically and the replica roles are changed. They do not consider SLAs though.
+\todo{Maybe for now we can make a table like the google drive doc and differentiate against each paper in terms of setting, constraints
+target objective, and simple summary of approach}
 
 \subsection{Paper Format}
