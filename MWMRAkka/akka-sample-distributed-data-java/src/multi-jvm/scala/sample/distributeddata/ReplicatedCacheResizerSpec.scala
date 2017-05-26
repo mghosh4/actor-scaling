@@ -76,11 +76,11 @@ class ReplicatedCacheResizerSpec extends MultiNodeSpec(ReplicatedCacheResizerSpe
   def context = system
 
   import ReplicatedCache._
-  import akka.actor.Props
+  import ReplicatedCacheSpec._
 
   val cluster = Cluster(system)
   val replicatedCache: ActorRef =
-    context.actorOf(FromConfig.props(Props[ReplicatedCache]), name = "replicatedCache")
+    context.actorOf(FromConfig.props(ReplicatedCache.props()), name = "replicatedCache")
 
   def join(from: RoleName, to: RoleName): Unit = {
     runOn(from) {
