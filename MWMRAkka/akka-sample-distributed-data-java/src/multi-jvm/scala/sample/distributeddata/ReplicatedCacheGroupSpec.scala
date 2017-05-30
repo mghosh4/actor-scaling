@@ -9,7 +9,7 @@ import scala.concurrent.duration._
 import akka.remote.testkit.MultiNodeConfig
 import akka.remote.testkit.MultiNodeSpec
 import akka.testkit.{ImplicitSender, TestProbe}
-import akka.actor.{ActorRef, Props}
+import akka.actor.ActorRef
 import akka.cluster.Cluster
 import akka.cluster.ddata.DistributedData
 import akka.cluster.ddata.Replicator.{GetReplicaCount, ReplicaCount}
@@ -17,7 +17,7 @@ import akka.remote.testconductor.RoleName
 import akka.routing.FromConfig
 import com.typesafe.config.ConfigFactory
 
-object ReplicatedCacheResizerSpec extends MultiNodeConfig {
+object ReplicatedCacheGroupSpec extends MultiNodeConfig {
   // register the named roles (nodes) of the test
   val node1 = role("node-1")
   val node2 = role("node-2")
@@ -42,40 +42,34 @@ object ReplicatedCacheResizerSpec extends MultiNodeConfig {
   // this configuration will be used for all nodes
   // note that no fixed host names and ports are used
   commonConfig(ConfigFactory.parseString("""
-    akka.actor.provider = "akka.cluster.ClusterActorRefProvider"
+    akka.actor.provider = cluster
     akka.remote.log-remote-lifecycle-events = off
     akka.cluster.roles = [compute]
     akka.log-dead-letters-during-shutdown = off
     akka.loglevel = INFO
 
-    #//#router-deploy-config
+    #//#router-lookup-config
     akka.actor.deployment {
       /replicatedCache {
-        router = round-robin-pool
-        resizer {
-          lower-bound = 2
-          upper-bound = 15
-          messages-per-resize = 100
+          router = round-robin-group
+          routees.paths = ["/user/replicatedCache"]
+          cluster {
+            enabled = on
+            allow-local-routees = on
+            use-role = compute
+          }
         }
-
-        cluster {
-          enabled = on
-          max-nr-of-instances-per-node = 15
-          allow-local-routees = on
-          use-role = compute
-        }
-      }
     }
-    #//#router-deploy-config
+    #//#router-lookup-config
     """))
 
 }
 
-class ReplicatedCacheResizerSpecMultiJvmNode1 extends ReplicatedCacheResizerSpec
-class ReplicatedCacheResizerSpecMultiJvmNode2 extends ReplicatedCacheResizerSpec
-class ReplicatedCacheResizerSpecMultiJvmNode3 extends ReplicatedCacheResizerSpec
+class ReplicatedCacheGroupSpecMultiJvmNode1 extends ReplicatedCacheGroupSpec
+class ReplicatedCacheGroupSpecMultiJvmNode2 extends ReplicatedCacheGroupSpec
+class ReplicatedCacheGroupSpecMultiJvmNode3 extends ReplicatedCacheGroupSpec
 
-class ReplicatedCacheResizerSpec extends MultiNodeSpec(ReplicatedCacheResizerSpec)
+class ReplicatedCacheGroupSpec extends MultiNodeSpec(ReplicatedCacheGroupSpec)
   with STMultiNodeSpec with ImplicitSender {
   override def initialParticipants = roles.size
 
@@ -86,7 +80,7 @@ class ReplicatedCacheResizerSpec extends MultiNodeSpec(ReplicatedCacheResizerSpe
 
   val cluster = Cluster(system)
   val replicatedCache: ActorRef =
-    context.actorOf(ReplicatedCache.props(), name = "replicatedCache")
+    context.actorOf(ReplicatedCache.props, name = "replicatedCache")
 
   def join(from: RoleName, to: RoleName): Unit = {
     runOn(from) {
