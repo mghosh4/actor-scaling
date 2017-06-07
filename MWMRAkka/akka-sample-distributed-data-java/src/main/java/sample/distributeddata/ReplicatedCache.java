@@ -19,11 +19,12 @@ import akka.cluster.ddata.Replicator.GetSuccess;
 import akka.cluster.ddata.Replicator.NotFound;
 import akka.cluster.ddata.Replicator.Update;
 import akka.cluster.ddata.Replicator.UpdateResponse;
+import scala.Serializable;
 
 @SuppressWarnings("unchecked")
 public class ReplicatedCache extends AbstractActor {
 
-  static class Request {
+  static class Request implements Serializable {
     public final String key;
     public final ActorRef replyTo;
 
@@ -33,7 +34,7 @@ public class ReplicatedCache extends AbstractActor {
     }
   }
 
-  public static class PutInCache {
+  public static class PutInCache implements Serializable {
     public final String key;
     public final Object value;
 
@@ -43,7 +44,7 @@ public class ReplicatedCache extends AbstractActor {
     }
   }
 
-  public static class GetFromCache {
+  public static class GetFromCache implements Serializable {
     public final String key;
 
     public GetFromCache(String key) {
@@ -51,11 +52,11 @@ public class ReplicatedCache extends AbstractActor {
     }
   }
 
-  public static class Cached {
+  public static class Cached implements Serializable {
     public final String key;
-    public final Optional<Object> value;
+    public final Object value;
 
-    public Cached(String key, Optional<Object> value) {
+    public Cached(String key, Object value) {
       this.key = key;
       this.value = value;
     }
@@ -98,7 +99,7 @@ public class ReplicatedCache extends AbstractActor {
 
   }
 
-  public static class Evict {
+  public static class Evict implements Serializable {
     public final String key;
 
     public Evict(String key) {
@@ -146,13 +147,13 @@ public class ReplicatedCache extends AbstractActor {
   private void receiveGetSuccess(GetSuccess<LWWMap<String, Object>> g) {
     Request req = (Request) g.getRequest().get();
     Option<Object> valueOption = g.dataValue().get(req.key);
-    Optional<Object> valueOptional = Optional.ofNullable(valueOption.isDefined() ? valueOption.get() : null);
+    Object valueOptional = valueOption.isDefined() ? valueOption.get() : null;
     req.replyTo.tell(new Cached(req.key, valueOptional), self());
   }
 
   private void receiveNotFound(NotFound<LWWMap<String, Object>> n) {
     Request req = (Request) n.getRequest().get();
-    req.replyTo.tell(new Cached(req.key, Optional.empty()), self());
+    req.replyTo.tell(new Cached(req.key, null), self());
   }
 
   private Key<LWWMap<String, Object>> dataKey(String entryKey) {

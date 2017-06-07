@@ -3,19 +3,18 @@
   */
 package sample.distributeddata
 
-import java.util.Optional
-
 import scala.concurrent.duration._
 import akka.remote.testkit.MultiNodeConfig
 import akka.remote.testkit.MultiNodeSpec
 import akka.testkit.{ImplicitSender, TestProbe}
-import akka.actor.{ActorRef, Props}
+import akka.actor.{PoisonPill, Props, RootActorPath}
 import akka.cluster.Cluster
 import akka.cluster.ddata.DistributedData
 import akka.cluster.ddata.Replicator.{GetReplicaCount, ReplicaCount}
+import akka.cluster.singleton.{ClusterSingletonManager, ClusterSingletonManagerSettings, ClusterSingletonProxy, ClusterSingletonProxySettings}
 import akka.remote.testconductor.RoleName
-import akka.routing.FromConfig
 import com.typesafe.config.ConfigFactory
+import org.scalatest.{BeforeAndAfterAll, Matchers, WordSpecLike}
 
 object ReplicatedCacheResizerSpec extends MultiNodeConfig {
   // register the named roles (nodes) of the test
@@ -32,7 +31,7 @@ object ReplicatedCacheResizerSpec extends MultiNodeConfig {
       # Disable legacy metrics in akka-cluster.
       akka.cluster.metrics.enabled=off
       # Enable metrics extension in akka-cluster-metrics.
-      # akka.extensions=["akka.cluster.metrics.ClusterMetricsExtension"]
+      akka.extensions=["akka.cluster.metrics.ClusterMetricsExtension"]
       # Sigar native library extract location during tests.
       akka.cluster.metrics.native-library-extract-folder=target/native/${role.name}
       """)
@@ -42,7 +41,7 @@ object ReplicatedCacheResizerSpec extends MultiNodeConfig {
   // this configuration will be used for all nodes
   // note that no fixed host names and ports are used
   commonConfig(ConfigFactory.parseString("""
-    akka.actor.provider = "akka.cluster.ClusterActorRefProvider"
+    akka.actor.provider = "cluster"
     akka.remote.log-remote-lifecycle-events = off
     akka.cluster.roles = [compute]
     akka.log-dead-letters-during-shutdown = off
@@ -50,14 +49,8 @@ object ReplicatedCacheResizerSpec extends MultiNodeConfig {
 
     #//#router-deploy-config
     akka.actor.deployment {
-      /replicatedCache {
+      /cachingService/singleton/replicatedCache {
         router = round-robin-pool
-        resizer {
-          lower-bound = 2
-          upper-bound = 15
-          messages-per-resize = 100
-        }
-
         cluster {
           enabled = on
           max-nr-of-instances-per-node = 15
@@ -76,8 +69,12 @@ class ReplicatedCacheResizerSpecMultiJvmNode2 extends ReplicatedCacheResizerSpec
 class ReplicatedCacheResizerSpecMultiJvmNode3 extends ReplicatedCacheResizerSpec
 
 class ReplicatedCacheResizerSpec extends MultiNodeSpec(ReplicatedCacheResizerSpec)
-  with STMultiNodeSpec with ImplicitSender {
+  with WordSpecLike with Matchers with BeforeAndAfterAll with STMultiNodeSpec with ImplicitSender {
   override def initialParticipants = roles.size
+
+  override def beforeAll() = multiNodeSpecBeforeAll()
+
+  override def afterAll() = multiNodeSpecAfterAll()
 
   def context = system
 
@@ -85,8 +82,15 @@ class ReplicatedCacheResizerSpec extends MultiNodeSpec(ReplicatedCacheResizerSpe
   import ReplicatedCacheSpec._
 
   val cluster = Cluster(system)
-  val replicatedCache: ActorRef =
-    context.actorOf(ReplicatedCache.props(), name = "replicatedCache")
+
+  system.actorOf(ClusterSingletonManager.props(
+    Props[CachingService],
+    terminationMessage = PoisonPill,
+    settings = ClusterSingletonManagerSettings(system)),
+    name = "cachingService")
+
+  system.actorOf(ClusterSingletonProxy.props("/user/cachingService",
+    ClusterSingletonProxySettings(system).withRole("compute")), "cachingServiceProxy")
 
   def join(from: RoleName, to: RoleName): Unit = {
     runOn(from) {
@@ -111,13 +115,15 @@ class ReplicatedCacheResizerSpec extends MultiNodeSpec(ReplicatedCacheResizerSpe
 
     "replicate cached entry" in within(10.seconds) {
       runOn(node1) {
-        replicatedCache ! new PutInCache("key1", "A")
+        val proxy = system.actorSelection(RootActorPath(node(node1).address) / "user" / "cachingServiceProxy")
+        proxy ! new PutInCache("key1", "A")
       }
 
       awaitAssert {
         val probe = TestProbe()
-        replicatedCache.tell(new GetFromCache("key1"), probe.ref)
-        probe.expectMsg(new Cached("key1", Optional.of("A")))
+        val proxy = system.actorSelection(RootActorPath(node(node1).address) / "user" / "cachingServiceProxy")
+        proxy.tell(new GetFromCache("key1"), probe.ref)
+        probe.expectMsg(new Cached("key1", "A"))
       }
 
       enterBarrier("after-2")
@@ -125,15 +131,17 @@ class ReplicatedCacheResizerSpec extends MultiNodeSpec(ReplicatedCacheResizerSpe
 
     "replicate many cached entries" in within(10.seconds) {
       runOn(node1) {
+        val proxy = system.actorSelection(RootActorPath(node(node1).address) / "user" / "cachingServiceProxy")
         for (i ← 100 to 200)
-          replicatedCache ! new PutInCache("key" + i, i)
+          proxy ! new PutInCache("key" + i, i)
       }
 
       awaitAssert {
         val probe = TestProbe()
+        val proxy = system.actorSelection(RootActorPath(node(node1).address) / "user" / "cachingServiceProxy")
         for (i ← 100 to 200) {
-          replicatedCache.tell(new GetFromCache("key" + i), probe.ref)
-          probe.expectMsg(new Cached("key" + i, Optional.of(Integer.valueOf(i))))
+          proxy.tell(new GetFromCache("key" + i), probe.ref)
+          probe.expectMsg(new Cached("key" + i, Integer.valueOf(i)))
         }
       }
 
@@ -142,24 +150,28 @@ class ReplicatedCacheResizerSpec extends MultiNodeSpec(ReplicatedCacheResizerSpe
 
     "replicate evicted entry" in within(15.seconds) {
       runOn(node1) {
-        replicatedCache ! new PutInCache("key2", "B")
+        val proxy = system.actorSelection(RootActorPath(node(node1).address) / "user" / "cachingServiceProxy")
+        proxy ! new PutInCache("key2", "B")
       }
 
       awaitAssert {
         val probe = TestProbe()
-        replicatedCache.tell(new GetFromCache("key2"), probe.ref)
-        probe.expectMsg(new Cached("key2", Optional.of("B")))
+        val proxy = system.actorSelection(RootActorPath(node(node1).address) / "user" / "cachingServiceProxy")
+        proxy.tell(new GetFromCache("key2"), probe.ref)
+        probe.expectMsg(new Cached("key2", "B"))
       }
       enterBarrier("key2-replicated")
 
       runOn(node3) {
-        replicatedCache ! new Evict("key2")
+        val proxy = system.actorSelection(RootActorPath(node(node3).address) / "user" / "cachingServiceProxy")
+        proxy ! new Evict("key2")
       }
 
       awaitAssert {
         val probe = TestProbe()
-        replicatedCache.tell(new GetFromCache("key2"), probe.ref)
-        probe.expectMsg(new Cached("key2", Optional.empty()))
+        val proxy = system.actorSelection(RootActorPath(node(node1).address) / "user" / "cachingServiceProxy")
+        proxy.tell(new GetFromCache("key2"), probe.ref)
+        probe.expectMsg(new Cached("key2", null))
       }
 
       enterBarrier("after-4")
@@ -167,14 +179,16 @@ class ReplicatedCacheResizerSpec extends MultiNodeSpec(ReplicatedCacheResizerSpe
 
     "replicate updated cached entry" in within(10.seconds) {
       runOn(node2) {
-        replicatedCache ! new PutInCache("key1", "A2")
-        replicatedCache ! new PutInCache("key1", "A3")
+        val proxy = system.actorSelection(RootActorPath(node(node2).address) / "user" / "cachingServiceProxy")
+        proxy ! new PutInCache("key1", "A2")
+        proxy ! new PutInCache("key1", "A3")
       }
 
       awaitAssert {
         val probe = TestProbe()
-        replicatedCache.tell(new GetFromCache("key1"), probe.ref)
-        probe.expectMsg(new Cached("key1", Optional.of("A3")))
+        val proxy = system.actorSelection(RootActorPath(node(node1).address) / "user" / "cachingServiceProxy")
+        proxy.tell(new GetFromCache("key1"), probe.ref)
+        probe.expectMsg(new Cached("key1", "A3"))
       }
 
       enterBarrier("after-5")
